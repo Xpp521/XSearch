@@ -1,5 +1,5 @@
-from .SettingDialog_ui import Ui_Dialog_setting
 from PyQt5.QtWidgets import QDialog
+from .SettingDialog_ui import Ui_Dialog_setting
 
 
 class SettingWindow(QDialog):
@@ -12,6 +12,9 @@ class SettingWindow(QDialog):
         self._ui.ok.clicked.connect(self.ok)
         self._ui.cancel.clicked.connect(lambda: self.hide())
         self.reject = lambda: self.hide()
+
+    def popup(self):
+        self.show()
 
     def apply(self):
         pass
