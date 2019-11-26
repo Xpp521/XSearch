@@ -26,5 +26,6 @@ class XSearch:
         return True
 
     def __show_message(self, msg):
+        from Strings import Strings
         if msg and isinstance(msg, str):
-            self.__tray_icon.showMessage('XSearch', msg)
+            self.__tray_icon.showMessage(Strings.APP_NAME, msg)
