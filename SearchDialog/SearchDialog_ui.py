@@ -5,6 +5,8 @@
 # Created by: PyQt5 UI code generator 5.11.3
 #
 # WARNING! All changes made in this file will be lost!
+from os.path import join
+from PyQt5.QtGui import QIcon
 from PyQt5 import QtCore, QtWidgets
 
 
@@ -12,6 +14,7 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(690, 50)
+        Dialog.setWindowIcon(QIcon(join('Icons', 'XSearch.ico')))
         Dialog.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         Dialog.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         self.lineEdit = QtWidgets.QLineEdit(Dialog)
@@ -30,5 +33,4 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         from Strings import Strings
-        _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", Strings.APP_NAME))
+        Dialog.setWindowTitle(Strings.APP_NAME)

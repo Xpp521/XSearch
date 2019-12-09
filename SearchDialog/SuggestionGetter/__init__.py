@@ -4,21 +4,29 @@
 # @Email   : Xpp233@foxmail.com
 """
 Usage:
-    from SuggestionGetter import keyword_suggestion_getter
-    keyword_suggestion_getter.signal.connect(func)
+    from PyQt5.QtCore import pyqtSignal
+    from SuggestionGetter import keyword_suggestion_getter as getter
 
-    def func(suggestions):
-        print(suggestions)
 
-    # get suggestions
-    keyword_suggestion_getter.get('keyword')
+    class A:
+        get_suggestion_signal = pyqtSignal(str)
 
-    # clear cached data
-    keyword_suggestion_getter.clear_cache()
+        def __init__(self):
+            self.get_suggestion_signal.connect(getter.get)
+            getter.signal.connect(self.__show_suggestions)
+
+        def get_suggestions(keyword):
+            self.get_suggestion_signal.emit(keyword)
+
+        def __show_suggestions(suggestions):
+            print(suggestions)
+
+
+    a = A()
+    a.get_suggestions('keyword')
 """
-from .__main import KeywordSuggestionGetter as __KeywordSuggestionGetter, URLSuggestionGetter as __URLSuggestionGetter
+from .main import KeywordSuggestionGetter as __KeywordSuggestionGetter, URLSuggestionGetter as __URLSuggestionGetter
 from PyQt5.QtCore import QThread as __QThread
-
 __thread = __QThread()
 __thread.start()
 keyword_suggestion_getter = __KeywordSuggestionGetter()

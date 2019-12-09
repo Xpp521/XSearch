@@ -126,4 +126,3 @@ class URLSuggestionGetter(QObject):
     @api.setter
     def api(self, value):
         self.__api = value if value else 'https://sug.so.360.cn/suggest/word?'
-

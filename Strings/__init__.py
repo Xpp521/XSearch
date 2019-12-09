@@ -9,7 +9,8 @@ If the setting doesn't exist, use the system default language.
 from PyQt5.QtCore import QSettings
 from locale import getdefaultlocale
 from importlib import import_module
-lang = QSettings().value('language/data')
+# QSettings().clear()
+lang = QSettings().value('Language/data')
 if lang:
     module = import_module('.Strings_{}'.format(lang), 'Strings')
     from . import module as Strings

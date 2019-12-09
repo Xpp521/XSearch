@@ -1,3 +1,4 @@
+from os.path import join
 from PyQt5.QtCore import Qt
 from PyQt5.Qt import QCursor
 from PyQt5.QtGui import QIcon
@@ -29,15 +30,30 @@ class TrayIcon(QSystemTrayIcon):
         menu = QMenu()
         menu.setWindowFlags(Qt.Popup | Qt.FramelessWindowHint)
         menu.setAttribute(Qt.WA_TranslucentBackground)
-        self.action_show = QAction('显示界面', menu)
-        self.action_setting = QAction('设置', menu)
+        action_show = QAction(menu)
+        action_setting = QAction(menu)
         action_separator = QAction(menu)
         action_separator.setSeparator(True)
-        menu.addActions((self.action_show, self.action_setting,
-                         action_separator, QAction('退出', menu, triggered=QApplication.instance().quit)))
+        action_exit = QAction(menu, triggered=QApplication.instance().quit)
+        self.actions = {'search': action_show, 'setting': action_setting, 'exit': action_exit}
+        menu.addActions((action_show, action_setting, action_separator, action_exit))
         menu.setStyleSheet(self.qss)
         self.setContextMenu(menu)
         self.__cursor = QCursor()
         self.activated.connect(lambda: menu.popup(self.__cursor.pos()))
-        self.setIcon(QIcon('Leaf.ico'))
-        self.setToolTip('XSearch')
+        self.setIcon(QIcon(join('Icons', 'XSearch.ico')))
+        self.retranslate_ui()
+
+    def set_action_handler(self, action_name, handler):
+        action = self.actions.get(action_name)
+        if isinstance(action, QAction) and callable(handler):
+            action.triggered.connect(handler)
+            return True
+        return False
+
+    def retranslate_ui(self):
+        from Strings import Strings
+        self.setToolTip(Strings.APP_NAME)
+        self.actions.get('search').setText(Strings.TRAY_SEARCH)
+        self.actions.get('setting').setText(Strings.TRAY_SETTING)
+        self.actions.get('exit').setText(Strings.TRAY_EXIT)
