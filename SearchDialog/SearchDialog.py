@@ -132,12 +132,12 @@ class SearchDialog(QDialog):
             self.show()
             self.raise_()
             self.activateWindow()
-        # self._ui.lineEdit.setFocus()
         if self.__first_popup:
             p = self.mapToGlobal(QPoint(0, self.height()))
             self.__ui.listView.move(p.x(), p.y() + self.__dialog_list_distance)
             self.__first_popup = False
             self.__max_list_height = QApplication.desktop().screenGeometry().height() - 1 - self.mapToGlobal(QPoint(0, self.height())).y() - self.__dialog_list_distance
+        self.__ui.lineEdit.clear()
 
     def __hide_dialog(self, *args, **kwargs):
         if self.__ui.listView.isVisible():

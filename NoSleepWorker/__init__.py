@@ -3,12 +3,16 @@
 # @Author  : Xpp
 # @Email   : Xpp233@foxmail.com
 """
+NoSleepWorker
+~~~~~~~~~~~~~
 This module can prevent devices from sleeping.
 
 Usage:
     from NoSleepWorkers import Worker
 
     worker = Worker()
+
+    # start
     worker.start()
 
     # show working state
@@ -21,8 +25,7 @@ Usage:
     worker.resume()
 """
 from sys import platform
-# import "Worker" according to the user's system platform.
 if 'win' == platform[:3]:
-    from .WindowsWorker import WindowsWorker as Worker
+    from .Workers import WindowsWorker as Worker
 else:
-    from .KeyBoardWorker import KeyBoardWorker as Worker
+    from .Workers import KeyBoardWorker as Worker

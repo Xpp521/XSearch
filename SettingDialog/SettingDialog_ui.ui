@@ -24,7 +24,7 @@
    </property>
    <column>
     <property name="text">
-     <string> </string>
+     <string/>
     </property>
    </column>
    <item>
@@ -268,19 +268,6 @@
      <string>开启</string>
     </property>
    </widget>
-   <zorder>checkBox_private_mode</zorder>
-   <zorder>label_search_engine</zorder>
-   <zorder>label_private_mode</zorder>
-   <zorder>label_private_mode_tip</zorder>
-   <zorder>label_browser_path</zorder>
-   <zorder>pushButton_browser_path</zorder>
-   <zorder>comboBox_search_engine</zorder>
-   <zorder>lineEdit_browser_path</zorder>
-   <zorder>label_suggestion_engine</zorder>
-   <zorder>comboBox_suggest_engine</zorder>
-   <zorder>label_search_suggestion</zorder>
-   <zorder>checkBox_search_suggestion</zorder>
-   <zorder>frame_hotkey</zorder>
   </widget>
   <widget class="QFrame" name="frame_appearance">
    <property name="geometry">
@@ -467,7 +454,7 @@
      <string>单个按键</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="radioButton_mutiple_key">
+   <widget class="QRadioButton" name="radioButton_multiple_key">
     <property name="geometry">
      <rect>
       <x>370</x>
@@ -480,101 +467,6 @@
      <string>多个按键</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="comboBox_interval">
-    <property name="geometry">
-     <rect>
-      <x>470</x>
-      <y>320</y>
-      <width>100</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <item>
-     <property name="text">
-      <string>0.5</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>0.1</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>0.2</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>0.3</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>0.4</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>0.6</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>0.7</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>0.8</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>0.9</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>1</string>
-     </property>
-    </item>
-   </widget>
-   <widget class="QComboBox" name="comboBox_press_times">
-    <property name="geometry">
-     <rect>
-      <x>470</x>
-      <y>290</y>
-      <width>100</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <item>
-     <property name="text">
-      <string>2</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>3</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>4</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>5</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>1</string>
-     </property>
-    </item>
-   </widget>
    <widget class="QLineEdit" name="lineEdit_key_setting">
     <property name="geometry">
      <rect>
@@ -583,6 +475,9 @@
       <width>100</width>
       <height>22</height>
      </rect>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QLabel" name="label_key_setting_tip">
@@ -598,32 +493,6 @@
      <string>在下方输入键位</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_interval">
-    <property name="geometry">
-     <rect>
-      <x>380</x>
-      <y>320</y>
-      <width>72</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>间隔时间</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_press_times">
-    <property name="geometry">
-     <rect>
-      <x>380</x>
-      <y>290</y>
-      <width>72</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>按压次数</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_key_setting">
     <property name="geometry">
      <rect>
@@ -637,31 +506,152 @@
      <string>键位设置</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_other_key_setting">
+   <widget class="QGroupBox" name="groupBox_extra_setting">
     <property name="geometry">
      <rect>
-      <x>370</x>
+      <x>360</x>
       <y>230</y>
-      <width>72</width>
-      <height>16</height>
+      <width>221</width>
+      <height>121</height>
      </rect>
     </property>
-    <property name="text">
-     <string>其它设置</string>
+    <property name="title">
+     <string>附加设置</string>
     </property>
-   </widget>
-   <widget class="QLabel" name="label_other_key_setting_tip">
-    <property name="geometry">
-     <rect>
-      <x>380</x>
-      <y>260</y>
-      <width>191</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>只对单个按键型快捷键有效</string>
-    </property>
+    <widget class="QComboBox" name="comboBox_press_times">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>60</y>
+       <width>100</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>2</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>3</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>4</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>5</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="label_extra_key_setting_tip">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>191</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>只对单个按键型快捷键有效</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_interval">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>90</y>
+       <width>72</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>间隔时间</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_press_times">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>72</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>按压次数</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox_interval">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>90</y>
+       <width>100</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>0.5</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>0.1</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>0.2</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>0.3</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>0.4</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>0.6</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>0.7</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>0.8</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>0.9</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1</string>
+      </property>
+     </item>
+    </widget>
    </widget>
   </widget>
   <zorder>treeWidget</zorder>

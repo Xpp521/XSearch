@@ -1,7 +1,7 @@
 from sys import modules
 from TrayIcon import TrayIcon
+from NoSleepWorker import Worker
 from PyHotKey import manager, Key
-from NoSleepWorkers import Worker
 from PyQt5.QtCore import QSettings
 from SearchDialog import SearchDialog
 from SettingDialog import SettingDialog
@@ -20,9 +20,8 @@ class XSearch:
             raise ConnectionError("Tray icon's handler connection failed.")
         self.__widgets = {'tray_icon': tray_icon, 'search': search_dialog, 'setting': setting_dialog}
         self.__hotkey_manager = manager
-        # self.__hotkey_manager.logger = True
         self.__hot_key_id = -1
-        self.__change_hot_key([Key.caps_lock])
+        self.__update_hot_key()
         self.__worker = Worker()
         self.__worker.start()
         if not self.__setting.value('NoSleepStatus', 0):
@@ -32,9 +31,7 @@ class XSearch:
     def __change_settings(self, changed_map):
         self.__setting_changed = True
         if changed_map.get('hotkey'):
-            # hotkey = self.__setting.value('Hotkey')
-            # self.__change_hot_key(hotkey)
-            pass
+            self.__update_hot_key()
         if changed_map.get('language'):
             modules.pop('Strings')
             self.__exec_on_widgets('retranslate_ui')
@@ -56,14 +53,22 @@ class XSearch:
         if not self.__widgets.get('setting').isVisible():
             self.__widgets.get('setting').popup()
 
-    def __change_hot_key(self, keys, count=2, interval=0.5):
-        self.__hotkey_manager.UnregisterHotKey(self.__hot_key_id)
+    def __update_hot_key(self):
+        keys = []
+        for key_text in self.__setting.value('Hotkey/keys', 'caps_lock').split('+'):
+            enum = getattr(Key, key_text, None)
+            keys.append(enum if enum else key_text[0])
         key_id = self.__hotkey_manager.RegisterHotKey(self.__widgets.get('tray_icon').actions.get('search').trigger,
-                                                      keys, count, interval)
+                                                      keys, self.__setting.value('Hotkey/press_time/data', 2),
+                                                      float(self.__setting.value('Hotkey/interval/data', 0.5)))
         if -1 == key_id:
             return False
-        self.__hot_key_id = key_id
-        return True
+        if -1 == self.__hot_key_id or self.__hotkey_manager.UnregisterHotKey(self.__hot_key_id):
+            self.__hot_key_id = key_id
+            return True
+        else:
+            self.__hotkey_manager.UnregisterHotKey(key_id)
+            return False
 
     def __show_message(self, msg):
         from Strings import Strings
