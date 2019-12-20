@@ -1,3 +1,19 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Xpp521
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from os.path import join
 from PyQt5.QtCore import Qt
 from PyQt5.Qt import QCursor
@@ -30,11 +46,11 @@ class TrayIcon(QSystemTrayIcon):
         menu = QMenu()
         menu.setWindowFlags(Qt.Popup | Qt.FramelessWindowHint)
         menu.setAttribute(Qt.WA_TranslucentBackground)
-        action_show = QAction(menu)
-        action_setting = QAction(menu)
+        action_show = QAction(QIcon(join('Icons', 'search.png')), '', menu)
+        action_setting = QAction(QIcon(join('Icons', 'setting.png')), '', menu)
         action_separator = QAction(menu)
         action_separator.setSeparator(True)
-        action_exit = QAction(menu, triggered=QApplication.instance().quit)
+        action_exit = QAction(QIcon(join('Icons', 'exit.png')), '', menu, triggered=QApplication.instance().quit)
         self.actions = {'search': action_show, 'setting': action_setting, 'exit': action_exit}
         menu.addActions((action_show, action_setting, action_separator, action_exit))
         menu.setStyleSheet(self.qss)

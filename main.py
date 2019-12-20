@@ -1,3 +1,19 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Xpp521
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from sys import modules
 from TrayIcon import TrayIcon
 from NoSleepWorker import Worker
@@ -27,6 +43,8 @@ class XSearch:
         if not self.__setting.value('NoSleepStatus', 0):
             self.__worker.suspend()
         tray_icon.show()
+        from Strings import Strings
+        self.__show_message(Strings.TIP_WELCOME)
 
     def __change_settings(self, changed_map):
         self.__setting_changed = True
@@ -46,8 +64,9 @@ class XSearch:
 
     def __show_search_dialog(self):
         if not any((self.__widgets.get('search').isVisible(), self.__widgets.get('setting').isVisible())):
-            self.__widgets.get('search').popup(self.__setting_changed)
+            setting_changed = self.__setting_changed
             self.__setting_changed = False
+            self.__widgets.get('search').popup(setting_changed)
 
     def __show_setting_dialog(self):
         if not self.__widgets.get('setting').isVisible():

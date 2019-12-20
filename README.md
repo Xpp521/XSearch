@@ -4,7 +4,6 @@ This tool can improve your search efficiency and prevent your device from sleepi
 ጿ ኈ ቼ ዽ    ጿ ኈ ቼ ዽ    ጿ ኈ ቼ ዽ 
 
 ### Requirement
-- Python3
 - PyQt5
 - pynput
 - requests
