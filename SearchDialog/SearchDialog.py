@@ -1,7 +1,19 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/11/26 13:09
-# @Author  : Xpp
-# @Email   : Xpp233@foxmail.com
+#
+# Copyright 2019 Xpp521
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import webbrowser
 from sys import platform
 from os.path import join
@@ -15,7 +27,7 @@ from PyQt5.QtCore import Qt, QPoint, QSettings, pyqtSignal, QStringListModel
 
 
 class SearchDialog(QDialog):
-    __get_suggestions = pyqtSignal(str)
+    __get_suggestions_signal = pyqtSignal(str)
 
     def __init__(self):
         super().__init__()
@@ -30,11 +42,11 @@ class SearchDialog(QDialog):
         self.__ui.setupUi(self)
         self.__suggestion_getter = keyword_suggestion_getter
         self.__suggestion_getter.signal.connect(self.__show_suggestions)
-        self.__get_suggestions.connect(self.__suggestion_getter.get)
+        self.__get_suggestions_signal.connect(self.__suggestion_getter.get)
         self.__suggestion_model = QStringListModel()
         self.__load_settings()
-        self.__ui.lineEdit.textEdited.connect(self.__on_text_edited)
         self.__ui.lineEdit.focusOutEvent = self.__hide_dialog
+        self.__ui.lineEdit.textEdited.connect(self.__on_text_edited)
         if 'win' == platform[:3]:
             from ctypes import windll
             from ctypes.wintypes import HWND
@@ -69,10 +81,13 @@ class SearchDialog(QDialog):
         self.setWindowOpacity(opacity)
         self.__ui.listView.setWindowOpacity(opacity)
         self.__dialog_list_distance = self.__setting.value('DialogListDistance', 3)
-        self.__search_engine = self.__setting.value('SearchEngine/data', 'https://www.baidu.com/s?wd={}&ie=utf-8')
-        self.__ui.label.setPixmap(QPixmap(self.__setting.value('SearchEngineIcon',
-                                                               join('Icons', 'baidu.png'))).scaled(20, 20))
-        self.__suggestion_getter.api = self.__setting.value('SuggestEngine/data', 'https://sug.so.360.cn/suggest/word?')
+        search_engine_and_icon = self.__setting.value('SearchEngine&Icon/data',
+                                                      '{}||https://www.baidu.com/s?wd=%s&ie=utf-8'.format(
+                                                          join('Icons', 'baidu.png')))
+        index = search_engine_and_icon.find('||')
+        self.__search_engine = search_engine_and_icon[index + 2:]
+        self.__ui.label.setPixmap(QPixmap(search_engine_and_icon[:index]).scaled(20, 20))
+        self.__suggestion_getter.api = self.__setting.value('SuggestEngine/data', '360')
         browser_path = self.__setting.value('BrowserPath')
         if browser_path:
             webbrowser.register('CustomBrowser', None, webbrowser.BackgroundBrowser(browser_path))
@@ -96,13 +111,13 @@ class SearchDialog(QDialog):
             self.__text = text
             text = text.strip()
             if not text:
-                self.__ui.listView.hide()
+                self.__get_suggestions_signal.emit(text)
                 return
             if self.__last_text == text:
                 if self.__suggestion_model.rowCount() and not self.__ui.listView.isVisible():
                     self.__ui.listView.show()
             else:
-                self.__get_suggestions.emit(text)
+                self.__get_suggestions_signal.emit(text)
                 self.__last_text = text
 
     def __show_suggestions(self, suggestions):
@@ -115,7 +130,6 @@ class SearchDialog(QDialog):
             if not self.__ui.listView.isVisible():
                 self.__ui.listView.show()
         else:
-            self.__ui.listView.hide()
             if self.__ui.listView.isVisible():
                 self.__ui.listView.hide()
 
@@ -136,13 +150,14 @@ class SearchDialog(QDialog):
             p = self.mapToGlobal(QPoint(0, self.height()))
             self.__ui.listView.move(p.x(), p.y() + self.__dialog_list_distance)
             self.__first_popup = False
-            self.__max_list_height = QApplication.desktop().screenGeometry().height() - 1 - self.mapToGlobal(QPoint(0, self.height())).y() - self.__dialog_list_distance
+            self.__max_list_height = QApplication.desktop().screenGeometry().height() - 1 - self.mapToGlobal(
+                QPoint(0, self.height())).y() - self.__dialog_list_distance
         self.__ui.lineEdit.clear()
 
     def __hide_dialog(self, *args, **kwargs):
+        self.__ui.lineEdit.clear()
         if self.__ui.listView.isVisible():
             self.__ui.listView.hide()
-        self.__ui.lineEdit.clear()
         self.hide()
 
     def closeEvent(self, event):
@@ -165,7 +180,7 @@ class SearchDialog(QDialog):
                 self.__ui.lineEdit.setText(text)
                 self.__text = text
                 self.__last_text = text
-                self.__get_suggestions.emit(text)
+                self.__get_suggestions_signal.emit(text)
         elif key in (Qt.Key_Up, Qt.Key_Down):
             if self.__suggestion_status:
                 if self.__ui.listView.isVisible():
@@ -194,13 +209,13 @@ class SearchDialog(QDialog):
                     self.__ui.listView.setCurrentIndex(index)
                     self.__ui.lineEdit.setText(self.__suggestion_model.data(index, Qt.DisplayRole))
         elif key in (Qt.Key_Return, Qt.Key_Enter):
-            text = self.__ui.lineEdit.text()
+            text = self.__ui.lineEdit.text().strip()
             if text:
                 if search(self.__regex_url, text):
                     self.__browser.open(text if text.startswith('http') else 'http://{}'.format(text))
                 else:
-                    self.__browser.open(self.__search_engine.format(
-                        '+'.join([quote(w) for w in split(r'\s+', text.strip())])))
+                    self.__browser.open(self.__search_engine.replace('%s',
+                                                                     '+'.join([quote(w) for w in split(r'\s+', text)])))
                 self.__hide_dialog()
         event.ignore()
 

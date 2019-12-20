@@ -1,3 +1,19 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright 2019 Xpp521
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from pynput.keyboard import Listener
 from .SettingDialog_ui import Ui_Dialog
 from PyQt5.QtWidgets import QDialog, QFileDialog
@@ -66,7 +82,7 @@ class SettingDialog(QDialog):
             self.__ui.frame_other.raise_()
 
     def __load_settings(self):
-        self.__ui.comboBox_search_engine.setCurrentIndex(self.__setting.value('SearchEngine/index', 0))
+        self.__ui.comboBox_search_engine.setCurrentIndex(self.__setting.value('SearchEngine&Icon/index', 0))
         self.__ui.checkBox_search_suggestion.setChecked(self.__setting.value('SuggestionStatus', 1))
         self.__ui.comboBox_suggest_engine.setCurrentIndex(self.__setting.value('SuggestionEngine/index', 0))
         self.__ui.lineEdit_browser_path.setText(self.__setting.value('BrowserPath'))
@@ -99,8 +115,8 @@ class SettingDialog(QDialog):
         self.__cur_no_sleep_status = no_sleep_status
 
     def __save_settings(self):
-        self.__setting.setValue('SearchEngine/index', self.__ui.comboBox_search_engine.currentIndex())
-        self.__setting.setValue('SearchEngine/data', self.__ui.comboBox_search_engine.currentData())
+        self.__setting.setValue('SearchEngine&Icon/index', self.__ui.comboBox_search_engine.currentIndex())
+        self.__setting.setValue('SearchEngine&Icon/data', self.__ui.comboBox_search_engine.currentData())
         self.__setting.setValue('SuggestionStatus', int(self.__ui.checkBox_search_suggestion.isChecked()))
         self.__setting.setValue('SuggestionEngine/index', self.__ui.comboBox_suggest_engine.currentIndex())
         self.__setting.setValue('SuggestionEngine/data', self.__ui.comboBox_suggest_engine.currentData())

@@ -1,5 +1,20 @@
 # -*- coding: utf-8 -*-
-
+#
+# Copyright 2019 Xpp521
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
 # Form implementation generated from reading ui file 'SettingDialog_ui.ui'
 #
 # Created by: PyQt5 UI code generator 5.11.3
@@ -244,16 +259,24 @@ class Ui_Dialog(object):
         self.label_key_setting.setText(Strings.SETTING_KEY_SETTING)
         self.groupBox_extra_setting.setTitle(Strings.SETTING_EXTRA_SETTING)
         self.label_extra_key_setting_tip.setText(Strings.SETTING_EXTRA_SETTING_TIP)
-        self.comboBox_search_engine.setItemData(0, 'https://www.baidu.com/s?ie=utf-8&wd={}')
-        self.comboBox_search_engine.setItemData(1, 'https://www.google.com/search?q={}')
-        self.comboBox_search_engine.setItemData(2, 'http://www.bing.com/search?q={}')
-        self.comboBox_search_engine.setItemData(3, 'http://cn.bing.com/search?q={}')
-        self.comboBox_search_engine.setItemData(4, 'https://www.so.com/s?ie=utf-8&q={}')
-        self.comboBox_search_engine.setItemData(5, 'https://www.sogou.com/web?ie=utf8&query={}')
-        self.comboBox_search_engine.setItemData(6, 'https://m.toutiao.com/search/?&keyword={}')
-        self.comboBox_search_engine.setItemData(7, 'https://yandex.com/search/?text={}')
-        self.comboBox_suggest_engine.setItemData(0, 'https://sug.so.360.cn/suggest/word?')
-        self.comboBox_suggest_engine.setItemData(1, 'https://www.baidu.com/sugrec?')
-        self.comboBox_suggest_engine.setItemData(2, 'https://www.sogou.com/suggnew/ajajjson?')
+        self.comboBox_search_engine.setItemData(0, '{}||https://www.baidu.com/s?ie=utf-8&wd=%s'.format(
+            join('Icons', 'baidu.png')))
+        self.comboBox_search_engine.setItemData(1, '{}||https://www.google.com/search?q=%s'.format(
+            join('Icons', 'google.png')))
+        self.comboBox_search_engine.setItemData(2, '{}||http://www.bing.com/search?q=%s'.format(join('Icons',
+                                                                                                     'bing.png')))
+        self.comboBox_search_engine.setItemData(3, '{}||http://cn.bing.com/search?q=%s'.format(join('Icons',
+                                                                                                    'bing.png')))
+        self.comboBox_search_engine.setItemData(4, '{}||https://www.so.com/s?ie=utf-8&q=%s'.format(join('Icons',
+                                                                                                        '360.png')))
+        self.comboBox_search_engine.setItemData(5, '{}||https://www.sogou.com/web?ie=utf8&query=%s'.format(
+            join('Icons', 'sogou.png')))
+        self.comboBox_search_engine.setItemData(6, '{}||https://m.toutiao.com/search/?&keyword=%s'.format(
+            join('Icons', 'toutiao.png')))
+        self.comboBox_search_engine.setItemData(7, '{}||https://yandex.com/search/?text=%s'.format(join('Icons',
+                                                                                                        'yandex.png')))
+        self.comboBox_suggest_engine.setItemData(0, '360')
+        self.comboBox_suggest_engine.setItemData(1, 'baidu')
+        self.comboBox_suggest_engine.setItemData(2, 'sogou')
         self.comboBox_language.setItemData(0, 'cn')
         self.comboBox_language.setItemData(1, 'en')
