@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Xpp521
+# Copyright 2020 Xpp521
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,31 +26,38 @@ AUTHOR_EMAIL = 'Xpp233@foxmail.com'
 
 # Setting dialog start
 SETTING_DIALOG_TITLE = 'Setting'
+SETTING_BASICS = 'Basics'
 SETTING_HOTKEY = 'Hot key'
 SETTING_SEARCH = 'Search'
+SETTING_ENGINE_MANAGEMENT = 'Engine'
 SETTING_APPEARANCE = 'Appearance'
 SETTING_OTHER = 'Other'
+SETTING_ADVANCED = 'Advanced'
 SETTING_ABOUT = 'About'
+
+SETTING_SHOW_TIP = 'Show tip'
+SETTING_START_UP = 'Start up at boot'
+
 SETTING_TURN_ON = 'Turn on'
 SETTING_SEARCH_ENGINE = 'Search engine'
 SETTING_SUGGEST = 'Search suggestion'
-SETTING_SUGGEST_ENGINE = 'Suggestion engine'
+SETTING_SUGGEST_ENGINE = 'Suggestion provider'
 SETTING_PRIVATE_MODE = 'Private mode'
-SETTING_PRIVATE_MODE_TIP = 'Browser path needs to be specified first. Currently supported browsers: Chrome、FireFox'
+SETTING_PRIVATE_MODE_TIP1 = 'Browser path needs to be specified first.'
+SETTING_PRIVATE_MODE_TIP2 = 'Currently supported browsers: Chrome、FireFox.'
 SETTING_BROWSER_PATH = 'Browser path'
 SETTING_CHOOSE_BROWSER = 'Choose browser'
 
 SETTING_HOTKEY_TYPE = 'Hot key type'
-SETTING_SINGLE_KEY = 'Single key'
-SETTING_MULTIPLE_KEY = 'Multiple key'
+SETTING_SINGLE_KEY = 'Single keystroke'
+SETTING_MULTIPLE_KEY = 'Multiple keystrokes'
 SETTING_KEY_SETTING = 'Key setting'
 SETTING_KEY_SETTING_TIP = 'Please enter keys below'
-SETTING_EXTRA_SETTING = 'Extra setting'
-SETTING_EXTRA_SETTING_TIP = 'Only for single key'
-SETTING_PRESS_TIMES = 'Press times'
+SETTING_PRESS_TIMES = 'the number of repeated keystrokes'
 SETTING_INTERVAL = 'Interval time'
 
 SETTING_LANGUAGE = 'Language'
+SETTING_FILLET = 'Fillet'
 SETTING_OPACITY = 'Opacity'
 
 SETTING_NO_SLEEP = 'No sleep'

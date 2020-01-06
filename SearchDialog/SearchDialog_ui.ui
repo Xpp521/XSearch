@@ -44,7 +44,7 @@
     <string>TextLabel</string>
    </property>
   </widget>
-  <widget class="QListView" name="listView">
+  <widget class="QWidget" name="widget" native="true">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -53,6 +53,16 @@
      <height>0</height>
     </rect>
    </property>
+   <widget class="QListView" name="listView">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>690</width>
+      <height>0</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>

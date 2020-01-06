@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Xpp521
+# Copyright 2020 Xpp521
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,21 +24,20 @@ from PyQt5.QtWidgets import QApplication, QAction, QMenu, QSystemTrayIcon
 class TrayIcon(QSystemTrayIcon):
     qss = '''QMenu {
                      font: 17px;
-                     background-color: white;
                      padding:3px 3px;
                      border: 1px solid grey;
                      border-radius: 5px;
+                     background-color: white;
                  }
                  QMenu::item {
-                     border-radius: 5px;
-                     background-color: transparent;
-                     padding:8px 32px;
                      margin:1px 1px;
-                     /* border-bottom:1px solid #DBDBDB; */
+                     border-radius: 5px;
+                     padding:8px 20px 8px 0;
+                     background-color: transparent;
                  }
                  QMenu::item:selected {
                      /* background-color: #2dabf9; */
-                     background-color: lightgrey;
+                     background-color: #91c9f7;
                  }'''
 
     def __init__(self):

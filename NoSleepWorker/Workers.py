@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Xpp521
+# Copyright 2020 Xpp521
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,16 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from time import sleep
-from ctypes import windll
 from PyQt5.QtCore import QThread
 from pynput.keyboard import Key, Controller
 
 
 class BaseWorker(QThread):
-    def __init__(self, sleep_time=None, parent=None):
+    def __init__(self, sleepTime=None, parent=None):
         super().__init__(parent)
         self.__is_paused = False
-        self.sleep_time = sleep_time
+        self.sleepTime = sleepTime
 
     def work(self):
         raise NotImplementedError
@@ -46,17 +45,17 @@ class BaseWorker(QThread):
         return self.isRunning() and not self.__is_paused
 
     @property
-    def sleep_time(self):
+    def sleepTime(self):
         return self.__sleep_time
 
-    @sleep_time.setter
-    def sleep_time(self, time):
+    @sleepTime.setter
+    def sleepTime(self, time):
         self.__sleep_time = time if isinstance(time, int) and 0 < time <= 1800 else 60
 
 
 class KeyBoardWorker(BaseWorker):
-    def __init__(self, sleep_time=None, key=None, parent=None):
-        super().__init__(sleep_time, parent)
+    def __init__(self, sleepTime=None, key=None, parent=None):
+        super().__init__(sleepTime, parent)
         self.key = key
         self.__keyboard = Controller()
 
@@ -79,8 +78,9 @@ class WindowsWorker(BaseWorker):
     ES_DISPLAY_REQUIRED = 0x00000002
     ES_AWAYMODE_REQUIRED = 0x00000040
 
-    def __init__(self, sleep_time=None, parent=None):
-        super().__init__(sleep_time, parent)
+    def __init__(self, sleepTime=None, parent=None):
+        from ctypes import windll
+        super().__init__(sleepTime, parent)
         self.__set_thread_execution_state = windll.kernel32.SetThreadExecutionState
 
     def work(self):

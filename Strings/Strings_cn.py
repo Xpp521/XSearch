@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Xpp521
+# Copyright 2020 Xpp521
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,17 +26,25 @@ AUTHOR_EMAIL = 'Xpp233@foxmail.com'
 
 # Setting dialog start
 SETTING_DIALOG_TITLE = '设置'
+SETTING_BASICS = '基础'
 SETTING_HOTKEY = '快捷键'
 SETTING_SEARCH = '搜索'
-SETTING_APPEARANCE = '语言和外观'
-SETTING_OTHER = '其它功能'
+SETTING_ENGINE_MANAGEMENT = '引擎管理'
+SETTING_APPEARANCE = '外观'
+SETTING_OTHER = '其它'
+SETTING_ADVANCED = '高级'
 SETTING_ABOUT = '关于'
+
+SETTING_SHOW_TIP = '显示通知'
+SETTING_START_UP = '开机启动'
+
 SETTING_TURN_ON = '开启'
 SETTING_SEARCH_ENGINE = '搜索引擎'
 SETTING_SUGGEST = '搜索建议'
 SETTING_SUGGEST_ENGINE = '搜索建议引擎'
 SETTING_PRIVATE_MODE = '无痕模式'
-SETTING_PRIVATE_MODE_TIP = '需要指定浏览器路径。目前支持的浏览器：Chrome、FireFox'
+SETTING_PRIVATE_MODE_TIP1 = '需要指定浏览器路径。'
+SETTING_PRIVATE_MODE_TIP2 = '目前支持的浏览器：Chrome、FireFox。'
 SETTING_BROWSER_PATH = '浏览器路径'
 SETTING_CHOOSE_BROWSER = '选择浏览器'
 
@@ -45,12 +53,11 @@ SETTING_SINGLE_KEY = '单个按键'
 SETTING_MULTIPLE_KEY = '多个按键'
 SETTING_KEY_SETTING = '键位设置'
 SETTING_KEY_SETTING_TIP = '请在下方输入框内输入键位'
-SETTING_EXTRA_SETTING = '附加设置'
-SETTING_EXTRA_SETTING_TIP = '只对单个按键类型的快捷键生效'
 SETTING_PRESS_TIMES = '按压次数'
 SETTING_INTERVAL = '间隔时间'
 
 SETTING_LANGUAGE = '语言'
+SETTING_FILLET = '圆角效果'
 SETTING_OPACITY = '透明度'
 
 SETTING_NO_SLEEP = '阻止休眠'

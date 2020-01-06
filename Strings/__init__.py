@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Xpp521
+# Copyright 2020 Xpp521
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@ If the setting doesn't exist, use the system default language.
 from PyQt5.QtCore import QSettings
 from locale import getdefaultlocale
 from importlib import import_module
-# QSettings().clear()
 lang = QSettings().value('Language/data')
 if lang:
     module = import_module('.Strings_{}'.format(lang), 'Strings')

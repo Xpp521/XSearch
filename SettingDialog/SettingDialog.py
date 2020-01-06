@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Xpp521
+# Copyright 2020 Xpp521
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,15 +28,17 @@ class SettingDialog(QDialog):
         self.__cur_hotkey = ''
         self.__cur_language = ''
         self.__pressed_keys = []
+        self.__cur_tip_status = 1
         self.__cur_no_sleep_status = 0
         self.__setting = QSettings()
         self.__ui = Ui_Dialog()
         self.__ui.setupUi(self)
+        self.__ui.checkBox_search_suggestion.clicked.connect(
+            lambda checked: self.__ui.comboBox_suggest_engine.setEnabled(checked))
         self.__ui.radioButton_single_key.clicked.connect(self.__change_hotkey_type)
         self.__ui.radioButton_multiple_key.clicked.connect(self.__change_hotkey_type)
         self.__ui.pushButton_browser_path.clicked.connect(self.__select_file)
         self.__ui.treeWidget.itemClicked.connect(self.__tree_item_clicked)
-        self.__ui.treeWidget.itemDoubleClicked.connect(lambda item, column: None)
         self.__key_setting_listener = Listener(self.__on_key_press, self.__on_key_release)
         self.__key_setting_listener.start()
 
@@ -61,30 +63,61 @@ class SettingDialog(QDialog):
         from Strings import Strings
         text = self.sender().text()
         if Strings.SETTING_SINGLE_KEY == text:
-            self.__ui.groupBox_extra_setting.setEnabled(True)
+            self.__ui.comboBox_press_times.setEnabled(True)
+            self.__ui.comboBox_interval.setEnabled(True)
         else:
-            self.__ui.groupBox_extra_setting.setEnabled(False)
+            self.__ui.comboBox_press_times.setEnabled(False)
+            self.__ui.comboBox_interval.setEnabled(False)
         self.__ui.lineEdit_key_setting.clear()
 
     def __tree_item_clicked(self, item, column):
-        if item.childCount() and not item.isExpanded():
-            item.setExpanded(True)
-            return
-        from Strings import Strings
-        data = item.data(0, Qt.DisplayRole)
-        if Strings.SETTING_SEARCH == data:
-            self.__ui.frame_search.raise_()
-        elif Strings.SETTING_HOTKEY == data:
-            self.__ui.frame_hotkey.raise_()
-        elif Strings.SETTING_APPEARANCE == data:
-            self.__ui.frame_appearance.raise_()
-        elif Strings.SETTING_OTHER == data:
-            self.__ui.frame_other.raise_()
+        item.setSelected(True)
+        parent = item.parent()
+        while parent:
+            if not parent.isSelected():
+                parent.setSelected(True)
+            parent = parent.parent()
+        if item.childCount():
+            if not item.isExpanded():
+                item.setExpanded(True)
+            self.__tree_item_clicked(item.child(0), column)
+        else:
+            from Strings import Strings
+            data = item.data(0, Qt.DisplayRole)
+            if Strings.SETTING_BASICS == data:
+                self.__ui.frame_basics.raise_()
+            if Strings.SETTING_ENGINE_MANAGEMENT == data:
+                self.__ui.frame_engine_management.raise_()
+            elif Strings.SETTING_OTHER == data:
+                self.__ui.frame_search_other.raise_()
+            elif Strings.SETTING_HOTKEY == data:
+                self.__ui.frame_hotkey.raise_()
+            elif Strings.SETTING_APPEARANCE == data:
+                self.__ui.frame_appearance.raise_()
+            elif Strings.SETTING_ADVANCED == data:
+                self.__ui.frame_advanced.raise_()
 
     def __load_settings(self):
+        self.setStyleSheet(self.__setting.value('SettingDialogQss',
+                                                '''QDialog, QDialog QFrame {
+                                                background-color: #ffffff;
+                                                }
+                                                QDialog QTreeWidget {
+                                                border: 0;
+                                                font: 20px;
+                                                border-right: 3px solid #f0f0f0;
+                                                }
+                                                QDialog QTreeWidget::item {
+                                                height: 50px;
+                                                }'''))
+        tip_status = self.__setting.value('ShowTip', 1)
+        self.__ui.checkBox_show_tip.setChecked(tip_status)
+        self.__cur_tip_status = tip_status
         self.__ui.comboBox_search_engine.setCurrentIndex(self.__setting.value('SearchEngine&Icon/index', 0))
-        self.__ui.checkBox_search_suggestion.setChecked(self.__setting.value('SuggestionStatus', 1))
+        suggestion_status = self.__setting.value('SuggestionStatus', 1)
+        self.__ui.checkBox_search_suggestion.setChecked(suggestion_status)
         self.__ui.comboBox_suggest_engine.setCurrentIndex(self.__setting.value('SuggestionEngine/index', 0))
+        self.__ui.comboBox_suggest_engine.setEnabled(suggestion_status)
         self.__ui.lineEdit_browser_path.setText(self.__setting.value('BrowserPath'))
         self.__ui.checkBox_private_mode.setChecked(self.__setting.value('PrivateMode', 0))
         if 1 == len(self.__setting.value('Hotkey/keys', 'caps_lock').split('+')):
@@ -98,14 +131,6 @@ class SettingDialog(QDialog):
         self.__cur_hotkey = keys
         self.__ui.comboBox_press_times.setCurrentIndex(self.__setting.value('Hotkey/press_times/index', 0))
         self.__ui.comboBox_interval.setCurrentIndex(self.__setting.value('Hotkey/interval/index', 0))
-        self.setStyleSheet(self.__setting.value('SettingDialogQss',
-                                                '''QDialog, QDialog QFrame {
-                                                background-color: #ffffff;
-                                                }
-                                                QDialog QTreeWidget {
-                                                border: 0;
-                                                border-right: 3px solid #f0f0f0;
-                                                }'''))
         language_index = self.__setting.value('Language/index', 0)
         self.__ui.comboBox_language.setCurrentIndex(language_index)
         self.__cur_language = language_index
@@ -115,6 +140,7 @@ class SettingDialog(QDialog):
         self.__cur_no_sleep_status = no_sleep_status
 
     def __save_settings(self):
+        self.__setting.setValue('ShowTip', int(self.__ui.checkBox_show_tip.isChecked()))
         self.__setting.setValue('SearchEngine&Icon/index', self.__ui.comboBox_search_engine.currentIndex())
         self.__setting.setValue('SearchEngine&Icon/data', self.__ui.comboBox_search_engine.currentData())
         self.__setting.setValue('SuggestionStatus', int(self.__ui.checkBox_search_suggestion.isChecked()))
@@ -146,20 +172,19 @@ class SettingDialog(QDialog):
 
     def popup(self):
         self.__load_settings()
-        self.__ui.treeWidget.clearSelection()
-        self.__ui.frame_search.raise_()
         self.show()
 
     def __apply(self):
         self.__save_settings()
         self.setting_changed.emit({
-            'hotkey': False if self.__cur_hotkey == self.__setting.value('Hotkey/keys', 'caps_lock') else True,
-            'language': False if self.__cur_language == self.__setting.value('Language/index', 0) else True,
+            'tip': self.__cur_tip_status != self.__ui.checkBox_show_tip,
+            'hotkey': self.__cur_hotkey != self.__setting.value('Hotkey/keys', 'caps_lock'),
+            'language': self.__cur_language != self.__setting.value('Language/index', 0),
             'appearance': False,
-            'sleep_status': False if self.__cur_no_sleep_status == self.__setting.value('NoSleepStatus', 0) else True
+            'sleep_status': self.__cur_no_sleep_status != self.__setting.value('NoSleepStatus', 0)
         })
 
-    def __ok(self):
+    def __confirm(self):
         self.__apply()
         self.hide()
 
@@ -170,7 +195,7 @@ class SettingDialog(QDialog):
         self.__ui.retranslateUi(self)
 
     def closeEvent(self, event):
-        self.__ok()
+        self.__confirm()
         event.ignore()
 
     def keyPressEvent(self, event):

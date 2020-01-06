@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Xpp521
+# Copyright 2020 Xpp521
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ class XSearch:
         self.__update_hot_key()
         self.__worker = Worker()
         self.__worker.start()
+        self.__show_tip = self.__setting.value('ShowTip', 1)
         if not self.__setting.value('NoSleepStatus', 0):
             self.__worker.suspend()
         tray_icon.show()
@@ -48,6 +49,8 @@ class XSearch:
 
     def __change_settings(self, changed_map):
         self.__setting_changed = True
+        if changed_map.get('tip'):
+            self.__show_tip = self.__setting.value('ShowTip', 1)
         if changed_map.get('hotkey'):
             self.__update_hot_key()
         if changed_map.get('language'):
@@ -90,9 +93,10 @@ class XSearch:
             return False
 
     def __show_message(self, msg):
-        from Strings import Strings
-        if isinstance(msg, str):
-            self.__widgets.get('tray_icon').showMessage(Strings.APP_NAME, msg)
+        if self.__show_tip:
+            from Strings import Strings
+            if isinstance(msg, str):
+                self.__widgets.get('tray_icon').showMessage(Strings.APP_NAME, msg)
 
     def __exec_on_widgets(self, func_name):
         for dialog in self.__widgets.values():
