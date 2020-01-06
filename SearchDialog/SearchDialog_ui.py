@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Xpp521
+# Copyright 2020 Xpp521
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(690, 50)
-        Dialog.setWindowIcon(QIcon(join('Icons', 'XSearch.ico')))
         Dialog.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         Dialog.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         self.lineEdit = QtWidgets.QLineEdit(Dialog)
@@ -38,14 +37,18 @@ class Ui_Dialog(object):
         self.label = QtWidgets.QLabel(Dialog)
         self.label.setGeometry(QtCore.QRect(11, 15, 20, 20))
         self.label.setObjectName("label")
-        self.listView = QtWidgets.QListView(Dialog)
-        self.listView.setWindowFlag(QtCore.Qt.ToolTip)
+        self.widget = QtWidgets.QWidget(Dialog, QtCore.Qt.ToolTip | QtCore.Qt.FramelessWindowHint)
+        self.widget.setGeometry(QtCore.QRect(0, 0, 690, 0))
+        self.widget.setObjectName("widget")
+        self.widget.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        self.widget.setVisible(False)
+        self.listView = QtWidgets.QListView(self.widget)
         self.listView.setGeometry(QtCore.QRect(0, 0, 690, 0))
         self.listView.setObjectName("listView")
-        self.listView.setVisible(False)
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
+        Dialog.setWindowIcon(QIcon(join('Icons', 'XSearch.ico')))
         from Strings import Strings
         Dialog.setWindowTitle(Strings.APP_NAME)

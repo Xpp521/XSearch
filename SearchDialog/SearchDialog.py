@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Xpp521
+# Copyright 2020 Xpp521
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -35,7 +35,6 @@ class SearchDialog(QDialog):
                            r'-a-zA-Z0-9]{0,62})+(:\d+)*(\/\w+\.\w+)*'
         self.__text = ''
         self.__last_text = ''
-        self.__first_popup = True
         self.__max_list_height = 0
         self.__setting = QSettings()
         self.__ui = Ui_Dialog()
@@ -64,22 +63,31 @@ class SearchDialog(QDialog):
         self.__suggestion_status = self.__setting.value('SuggestionStatus', True)
         self.setStyleSheet(self.__setting.value('SearchDialogQss',
                                                 '''QDialog QLineEdit {
+                                                color: black;
+                                                background-color: white;
                                                 border: 1px solid #a7acaf;
+                                                border-radius: 5px;
                                                 padding:0 11px 0 35px;
                                                 font: bold 20px;
                                                 }
                                                 QDialog QListView {
                                                 border: 1px solid #a7acaf;
+                                                border-radius: 5px;
+                                                color: black;
                                                 background-color: white;
                                                 padding: 5px;
                                                 font: 18px;
                                                 }
-                                                QDialog QListView::item {height: 35px;}
-                                                QDialog QListView::item:selected {background-color: #E5F3FF;}'''))
+                                                QDialog QListView::item {
+                                                height: 35px;
+                                                border-radius: 5px;
+                                                background-color: transparent;
+                                                }
+                                                QDialog QListView::item:selected {background-color: #91c9f7;}'''))
         # #5858fc
         opacity = float(self.__setting.value('Opacity/data', 0.9))
         self.setWindowOpacity(opacity)
-        self.__ui.listView.setWindowOpacity(opacity)
+        self.__ui.widget.setWindowOpacity(opacity)
         self.__dialog_list_distance = self.__setting.value('DialogListDistance', 3)
         search_engine_and_icon = self.__setting.value('SearchEngine&Icon/data',
                                                       '{}||https://www.baidu.com/s?wd=%s&ie=utf-8'.format(
@@ -110,12 +118,9 @@ class SearchDialog(QDialog):
         if self.__suggestion_status:
             self.__text = text
             text = text.strip()
-            if not text:
-                self.__get_suggestions_signal.emit(text)
-                return
             if self.__last_text == text:
-                if self.__suggestion_model.rowCount() and not self.__ui.listView.isVisible():
-                    self.__ui.listView.show()
+                if self.__suggestion_model.rowCount() and not self.__ui.widget.isVisible():
+                    self.__ui.widget.show()
             else:
                 self.__get_suggestions_signal.emit(text)
                 self.__last_text = text
@@ -127,11 +132,12 @@ class SearchDialog(QDialog):
         self.__ui.listView.setModel(self.__suggestion_model)
         if suggestions:
             self.__ui.listView.setFixedHeight(min(35 * len(suggestions) + 15, self.__max_list_height))
-            if not self.__ui.listView.isVisible():
-                self.__ui.listView.show()
+            self.__ui.widget.setFixedHeight(min(35 * len(suggestions) + 15, self.__max_list_height))
+            if not self.__ui.widget.isVisible():
+                self.__ui.widget.show()
         else:
-            if self.__ui.listView.isVisible():
-                self.__ui.listView.hide()
+            if self.__ui.widget.isVisible():
+                self.__ui.widget.hide()
 
     def popup(self, load_setting=False):
         if load_setting:
@@ -146,18 +152,16 @@ class SearchDialog(QDialog):
             self.show()
             self.raise_()
             self.activateWindow()
-        if self.__first_popup:
-            p = self.mapToGlobal(QPoint(0, self.height()))
-            self.__ui.listView.move(p.x(), p.y() + self.__dialog_list_distance)
-            self.__first_popup = False
-            self.__max_list_height = QApplication.desktop().screenGeometry().height() - 1 - self.mapToGlobal(
-                QPoint(0, self.height())).y() - self.__dialog_list_distance
+        p = self.mapToGlobal(QPoint(0, self.height()))
+        y = p.y()
+        self.__max_list_height = QApplication.desktop().screenGeometry().height() - 1 - y - self.__dialog_list_distance
+        self.__ui.widget.move(p.x(), y + self.__dialog_list_distance)
         self.__ui.lineEdit.clear()
 
     def __hide_dialog(self, *args, **kwargs):
         self.__ui.lineEdit.clear()
-        if self.__ui.listView.isVisible():
-            self.__ui.listView.hide()
+        if self.__ui.widget.isVisible():
+            self.__ui.widget.hide()
         self.hide()
 
     def closeEvent(self, event):
@@ -167,8 +171,8 @@ class SearchDialog(QDialog):
     def keyPressEvent(self, event):
         key = event.key()
         if Qt.Key_Escape == key:
-            if self.__ui.listView.isVisible():
-                self.__ui.listView.hide()
+            if self.__ui.widget.isVisible():
+                self.__ui.widget.hide()
             else:
                 self.__hide_dialog()
         elif Qt.Key_Tab == key:
@@ -183,7 +187,7 @@ class SearchDialog(QDialog):
                 self.__get_suggestions_signal.emit(text)
         elif key in (Qt.Key_Up, Qt.Key_Down):
             if self.__suggestion_status:
-                if self.__ui.listView.isVisible():
+                if self.__ui.widget.isVisible():
                     count = self.__suggestion_model.rowCount()
                     current_index = self.__ui.listView.currentIndex()
                     if Qt.Key_Up == key:
@@ -211,7 +215,7 @@ class SearchDialog(QDialog):
         elif key in (Qt.Key_Return, Qt.Key_Enter):
             text = self.__ui.lineEdit.text().strip()
             if text:
-                if search(self.__regex_url, text):
+                if ' ' not in text and search(self.__regex_url, text):
                     self.__browser.open(text if text.startswith('http') else 'http://{}'.format(text))
                 else:
                     self.__browser.open(self.__search_engine.replace('%s',
