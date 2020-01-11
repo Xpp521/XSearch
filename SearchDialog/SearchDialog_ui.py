@@ -45,7 +45,6 @@ class Ui_Dialog(object):
         self.listView = QtWidgets.QListView(self.widget)
         self.listView.setGeometry(QtCore.QRect(0, 0, 690, 0))
         self.listView.setObjectName("listView")
-        self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):

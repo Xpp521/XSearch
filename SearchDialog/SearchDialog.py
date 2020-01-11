@@ -19,7 +19,7 @@ from sys import platform
 from os.path import join
 from re import search, split
 from urllib.parse import quote
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QFont
 from .SearchDialog_ui import Ui_Dialog
 from PyQt5.QtWidgets import QDialog, QApplication
 from .SuggestionGetter import keyword_suggestion_getter
@@ -36,9 +36,11 @@ class SearchDialog(QDialog):
         self.__text = ''
         self.__last_text = ''
         self.__max_list_height = 0
+        self.__dialog_list_distance = 0
         self.__setting = QSettings()
         self.__ui = Ui_Dialog()
         self.__ui.setupUi(self)
+        self.reload_ui()
         self.__suggestion_getter = keyword_suggestion_getter
         self.__suggestion_getter.signal.connect(self.__show_suggestions)
         self.__get_suggestions_signal.connect(self.__suggestion_getter.get)
@@ -60,42 +62,14 @@ class SearchDialog(QDialog):
             # self.__SetFocus = user32.SetFocus
 
     def __load_settings(self):
-        self.__suggestion_status = self.__setting.value('SuggestionStatus', True)
-        self.setStyleSheet(self.__setting.value('SearchDialogQss',
-                                                '''QDialog QLineEdit {
-                                                color: black;
-                                                background-color: white;
-                                                border: 1px solid #a7acaf;
-                                                border-radius: 5px;
-                                                padding:0 11px 0 35px;
-                                                font: bold 20px;
-                                                }
-                                                QDialog QListView {
-                                                border: 1px solid #a7acaf;
-                                                border-radius: 5px;
-                                                color: black;
-                                                background-color: white;
-                                                padding: 5px;
-                                                font: 18px;
-                                                }
-                                                QDialog QListView::item {
-                                                height: 35px;
-                                                border-radius: 5px;
-                                                background-color: transparent;
-                                                }
-                                                QDialog QListView::item:selected {background-color: #91c9f7;}'''))
-        # #5858fc
-        opacity = float(self.__setting.value('Opacity/data', 0.9))
-        self.setWindowOpacity(opacity)
-        self.__ui.widget.setWindowOpacity(opacity)
-        self.__dialog_list_distance = self.__setting.value('DialogListDistance', 3)
+        self.__suggestion_state = int(self.__setting.value('SuggestionState'))
         search_engine_and_icon = self.__setting.value('SearchEngine&Icon/data',
                                                       '{}||https://www.baidu.com/s?wd=%s&ie=utf-8'.format(
                                                           join('Icons', 'baidu.png')))
         index = search_engine_and_icon.find('||')
         self.__search_engine = search_engine_and_icon[index + 2:]
         self.__ui.label.setPixmap(QPixmap(search_engine_and_icon[:index]).scaled(20, 20))
-        self.__suggestion_getter.api = self.__setting.value('SuggestEngine/data', '360')
+        self.__suggestion_getter.api = self.__setting.value('SuggestionProvider/data')
         browser_path = self.__setting.value('BrowserPath')
         if browser_path:
             webbrowser.register('CustomBrowser', None, webbrowser.BackgroundBrowser(browser_path))
@@ -105,7 +79,7 @@ class SearchDialog(QDialog):
                 self.__browser = webbrowser.get()
         else:
             self.__browser = webbrowser.get()
-        if getattr(self.__browser, 'basename', None) and self.__setting.value('PrivateMode', True):
+        if getattr(self.__browser, 'basename', None) and int(self.__setting.value('PrivateMode')):
             browser_name = self.__browser.basename.lower()
             if 'chrom' in browser_name:
                 self.__browser.args.append('--incognito')
@@ -115,7 +89,7 @@ class SearchDialog(QDialog):
                 self.__browser.args.append('')
 
     def __on_text_edited(self, text):
-        if self.__suggestion_status:
+        if self.__suggestion_state:
             self.__text = text
             text = text.strip()
             if self.__last_text == text:
@@ -126,6 +100,8 @@ class SearchDialog(QDialog):
                 self.__last_text = text
 
     def __show_suggestions(self, suggestions):
+        # if not self.__ui.lineEdit.isVisible():
+        #     self.__ui.listView.hide()
         if self.__suggestion_model.stringList() == suggestions:
             return
         self.__suggestion_model.setStringList(suggestions)
@@ -176,7 +152,7 @@ class SearchDialog(QDialog):
             else:
                 self.__hide_dialog()
         elif Qt.Key_Tab == key:
-            if self.__suggestion_status:
+            if self.__suggestion_state:
                 current_index = self.__ui.listView.currentIndex()
                 if self.__ui.listView.rootIndex() == current_index:
                     return
@@ -186,7 +162,7 @@ class SearchDialog(QDialog):
                 self.__last_text = text
                 self.__get_suggestions_signal.emit(text)
         elif key in (Qt.Key_Up, Qt.Key_Down):
-            if self.__suggestion_status:
+            if self.__suggestion_state:
                 if self.__ui.widget.isVisible():
                     count = self.__suggestion_model.rowCount()
                     current_index = self.__ui.listView.currentIndex()
@@ -223,5 +199,49 @@ class SearchDialog(QDialog):
                 self.__hide_dialog()
         event.ignore()
 
-    def retranslate_ui(self):
-        self.__ui.retranslateUi(self)
+    def reload_ui(self, text=True, qss=True):
+        if text:
+            self.__ui.retranslateUi(self)
+        if qss:
+            font = QFont()
+            self.__ui.lineEdit.setFont(font)
+            font.setPointSize(11)
+            self.__ui.listView.setFont(font)
+            font_color = self.__setting.value('Ui/font_color')
+            border_color = self.__setting.value('Ui/border_color')
+            border_radius = self.__setting.value('Ui/border_radius')
+            selected_color = self.__setting.value('Ui/selected_color')
+            background_color = self.__setting.value('Ui/background_color')
+            self.__ui.lineEdit.setStyleSheet('''QLineEdit {{
+            color: {};
+            font: bold 20px;
+            border-radius: {}px;
+            border: 1px solid {};
+            background-color: {};
+            padding:0 11px 0 35px;
+            }}'''.format(font_color, border_radius, border_color, background_color))
+            self.__ui.listView.setStyleSheet('''QListView {{
+            color: {};
+            padding: 5px;
+            border-radius: {}px;
+            border: 1px solid {};
+            background-color: {};
+            }}
+            QListView::item {{
+            height: 35px;
+            border-radius: {}px;
+            background-color: transparent;
+            }}
+            QListView::item:selected {{
+            background-color: {}
+            }}'''.format(font_color, border_radius, border_color,
+                         background_color, border_radius, selected_color))
+            # #5858fc
+            opacity = float(self.__setting.value('Ui/opacity'))
+            self.setWindowOpacity(opacity)
+            self.__ui.widget.setWindowOpacity(opacity)
+            self.__dialog_list_distance = int(self.__setting.value('Ui/distance'))
+
+    @property
+    def suggestion_getter(self):
+        return self.__suggestion_getter

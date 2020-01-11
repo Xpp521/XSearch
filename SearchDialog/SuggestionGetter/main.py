@@ -51,7 +51,11 @@ class BaseSuggestionGetter(QObject):
         raise NotImplementedError
 
     def clear_cache(self):
-        self.__cached_data.clear()
+        self.__cached_data = {'': []}
+
+    @property
+    def cache_size(self):
+        return sum([len(v) for v in self.__cached_data.values()])
 
     @property
     def api(self):

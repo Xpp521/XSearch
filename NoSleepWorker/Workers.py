@@ -40,6 +40,12 @@ class BaseWorker(QThread):
     def resume(self):
         self.__is_paused = False
 
+    def changeWorkingState(self):
+        """
+        Suspend or resume this worker.
+        """
+        self.__is_paused = not self.__is_paused
+
     @property
     def isWorking(self):
         return self.isRunning() and not self.__is_paused

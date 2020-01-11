@@ -18,28 +18,11 @@ from os.path import join
 from PyQt5.QtCore import Qt
 from PyQt5.Qt import QCursor
 from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import QSettings
 from PyQt5.QtWidgets import QApplication, QAction, QMenu, QSystemTrayIcon
 
 
 class TrayIcon(QSystemTrayIcon):
-    qss = '''QMenu {
-                     font: 17px;
-                     padding:3px 3px;
-                     border: 1px solid grey;
-                     border-radius: 5px;
-                     background-color: white;
-                 }
-                 QMenu::item {
-                     margin:1px 1px;
-                     border-radius: 5px;
-                     padding:8px 20px 8px 0;
-                     background-color: transparent;
-                 }
-                 QMenu::item:selected {
-                     /* background-color: #2dabf9; */
-                     background-color: #91c9f7;
-                 }'''
-
     def __init__(self):
         super().__init__()
         menu = QMenu()
@@ -52,12 +35,10 @@ class TrayIcon(QSystemTrayIcon):
         action_exit = QAction(QIcon(join('Icons', 'exit.png')), '', menu, triggered=QApplication.instance().quit)
         self.actions = {'search': action_show, 'setting': action_setting, 'exit': action_exit}
         menu.addActions((action_show, action_setting, action_separator, action_exit))
-        menu.setStyleSheet(self.qss)
         self.setContextMenu(menu)
         self.__cursor = QCursor()
         self.activated.connect(lambda: menu.popup(self.__cursor.pos()))
-        self.setIcon(QIcon(join('Icons', 'XSearch.ico')))
-        self.retranslate_ui()
+        self.reload_ui()
 
     def set_action_handler(self, action_name, handler):
         action = self.actions.get(action_name)
@@ -66,9 +47,35 @@ class TrayIcon(QSystemTrayIcon):
             return True
         return False
 
-    def retranslate_ui(self):
-        from Strings import Strings
-        self.setToolTip(Strings.APP_NAME)
-        self.actions.get('search').setText(Strings.TRAY_SEARCH)
-        self.actions.get('setting').setText(Strings.TRAY_SETTING)
-        self.actions.get('exit').setText(Strings.TRAY_EXIT)
+    def reload_ui(self, text=True, qss=True):
+        if text:
+            self.setIcon(QIcon(join('Icons', 'XSearch.ico')))
+            from Strings import Strings
+            self.setToolTip(Strings.APP_NAME)
+            self.actions.get('search').setText(Strings.TRAY_SEARCH)
+            self.actions.get('setting').setText(Strings.TRAY_SETTING)
+            self.actions.get('exit').setText(Strings.TRAY_EXIT)
+        if qss:
+            setting = QSettings()
+            font_color = setting.value('Ui/font_color')
+            border_color = setting.value('Ui/border_color')
+            border_radius = setting.value('Ui/border_radius')
+            selected_color = setting.value('Ui/selected_color')
+            background_color = setting.value('Ui/background_color')
+            self.contextMenu().setStyleSheet('''QMenu {{
+            color: {};
+            font: 17px;
+            padding:3px 3px;
+            border: 1px solid {};
+            border-radius: {}px;
+            background-color: {};
+            }}
+            QMenu::item {{
+            margin:1px 1px;
+            border-radius: {}px;
+            padding:8px 20px 8px 0;
+            background-color: transparent;
+            }}
+            QMenu::item:selected {{
+            background-color: {};
+            }}'''.format(font_color, border_color, border_radius, background_color, border_radius, selected_color))

@@ -37,11 +37,12 @@ Usage:
     a = A()
     a.get_suggestions('keyword')
 """
-from .main import KeywordSuggestionGetter as __KeywordSuggestionGetter, URLSuggestionGetter as __URLSuggestionGetter
 from PyQt5.QtCore import QThread as __QThread
+# from .main import URLSuggestionGetter as __URLSuggestionGetter
+from .main import KeywordSuggestionGetter as __KeywordSuggestionGetter
 __thread = __QThread()
 __thread.start()
 keyword_suggestion_getter = __KeywordSuggestionGetter()
 keyword_suggestion_getter.moveToThread(__thread)
-url_suggestion_getter = __URLSuggestionGetter()
-url_suggestion_getter.moveToThread(__thread)
+# url_suggestion_getter = __URLSuggestionGetter()
+# url_suggestion_getter.moveToThread(__thread)
