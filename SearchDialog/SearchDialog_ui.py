@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Xpp521
+# Copyright (C) 2020 Xpp521
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -45,6 +45,7 @@ class Ui_Dialog(object):
         self.listView = QtWidgets.QListView(self.widget)
         self.listView.setGeometry(QtCore.QRect(0, 0, 690, 0))
         self.listView.setObjectName("listView")
+        self.listView.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):

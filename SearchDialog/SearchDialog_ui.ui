@@ -22,14 +22,6 @@
      <height>50</height>
     </rect>
    </property>
-   <property name="font">
-    <font>
-     <family>Arial</family>
-     <pointsize>9</pointsize>
-     <weight>50</weight>
-     <bold>false</bold>
-    </font>
-   </property>
   </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
@@ -61,6 +53,9 @@
       <width>690</width>
       <height>0</height>
      </rect>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
     </property>
    </widget>
   </widget>

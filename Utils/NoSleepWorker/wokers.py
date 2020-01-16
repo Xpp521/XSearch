@@ -41,9 +41,7 @@ class BaseWorker(QThread):
         self.__is_paused = False
 
     def changeWorkingState(self):
-        """
-        Suspend or resume this worker.
-        """
+        """Suspend or resume."""
         self.__is_paused = not self.__is_paused
 
     @property

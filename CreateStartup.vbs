@@ -6,6 +6,6 @@ oShellLink.TargetPath = app_dir & "\Run.pyw"
 'oShellLink.WindowStyle = 1
 'oShellLink.Hotkey = "Ctrl+Alt+e"
 oShellLink.IconLocation = app_dir & "\Icons\XSearch.ico"
-oShellLink.Description = "The most convenient search app."
+oShellLink.Description = "The most convenient web search application."
 oShellLink.WorkingDirectory = app_dir
 oShellLink.Save

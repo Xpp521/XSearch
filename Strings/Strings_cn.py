@@ -40,6 +40,10 @@ SETTING_LANGUAGE = '语言'
 SETTING_SHOW_TIP = '显示通知'
 SETTING_START_UP = '开机启动'
 
+SETTING_KEYWORD = '关键词'
+SETTING_ICON = '图标'
+SETTING_URL = '网址'
+SETTING_SET_DEFAULT_ENGINE = '设置为默认引擎'
 SETTING_TURN_ON = '开启'
 SETTING_SUGGEST = '搜索建议'
 SETTING_SUGGEST_ENGINE = '搜索建议引擎'
@@ -89,6 +93,7 @@ SETTING_ENGLISH = '英语'
 SETTING_BAIDU = '百度'
 SETTING_360 = '360'
 SETTING_SOGOU = '搜狗'
+SETTING_DOGE = '多吉'
 # Setting dialog end
 
 # Tray icon start
@@ -98,5 +103,8 @@ TRAY_EXIT = '退出'
 # Tray icon end
 
 # Notification start
-TIP_WELCOME = 'X搜索已开启~！'
+TIP_WELCOME = 'XSearch已开启 : )'
+TIP_TURN_ON_TIP = '已开启提示'
+TIP_ALLOW_SLEEP = '已允许设备休眠'
+TIP_PREVENT_SLEEP = '已禁止设备休眠'
 # Notification end

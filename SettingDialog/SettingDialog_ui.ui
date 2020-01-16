@@ -168,13 +168,6 @@
        <height>25</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
      <property name="text">
       <string>阻止休眠</string>
      </property>
@@ -183,7 +176,7 @@
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>50</y>
+       <y>60</y>
        <width>100</width>
        <height>20</height>
       </rect>
@@ -204,13 +197,6 @@
        <height>25</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
      <property name="text">
       <string>备份与恢复</string>
      </property>
@@ -219,10 +205,13 @@
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>162</y>
+       <y>170</y>
        <width>100</width>
        <height>25</height>
       </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <property name="text">
       <string>导入设置</string>
@@ -232,10 +221,13 @@
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>162</y>
+       <y>170</y>
        <width>100</width>
        <height>25</height>
       </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <property name="text">
       <string>导出设置</string>
@@ -261,7 +253,7 @@
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>538</y>
+       <y>540</y>
        <width>91</width>
        <height>20</height>
       </rect>
@@ -282,13 +274,6 @@
        <height>25</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
      <property name="text">
       <string>无痕模式</string>
      </property>
@@ -297,7 +282,7 @@
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>498</y>
+       <y>500</y>
        <width>690</width>
        <height>16</height>
       </rect>
@@ -315,13 +300,6 @@
        <height>25</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
      <property name="text">
       <string>浏览器路径</string>
      </property>
@@ -330,7 +308,7 @@
      <property name="geometry">
       <rect>
        <x>570</x>
-       <y>386</y>
+       <y>400</y>
        <width>35</width>
        <height>25</height>
       </rect>
@@ -349,7 +327,7 @@
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>386</y>
+       <y>400</y>
        <width>500</width>
        <height>25</height>
       </rect>
@@ -367,25 +345,21 @@
        <height>25</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
      <property name="text">
       <string>搜索建议引擎</string>
      </property>
     </widget>
-    <widget class="QComboBox" name="comboBox_suggest_engine">
+    <widget class="QComboBox" name="comboBox_suggestion_engine">
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>162</y>
+       <y>170</y>
        <width>150</width>
        <height>22</height>
       </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <item>
       <property name="text">
@@ -412,13 +386,6 @@
        <height>25</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
      <property name="text">
       <string>搜索建议</string>
      </property>
@@ -427,7 +394,7 @@
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>50</y>
+       <y>60</y>
        <width>100</width>
        <height>20</height>
       </rect>
@@ -443,7 +410,7 @@
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>518</y>
+       <y>520</y>
        <width>690</width>
        <height>16</height>
       </rect>
@@ -461,13 +428,6 @@
        <height>25</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
      <property name="text">
       <string>清除搜索建议缓存</string>
      </property>
@@ -476,10 +436,13 @@
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>294</y>
+       <y>310</y>
        <width>100</width>
        <height>25</height>
       </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <property name="text">
       <string>清除</string>
@@ -489,7 +452,7 @@
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>274</y>
+       <y>280</y>
        <width>100</width>
        <height>16</height>
       </rect>
@@ -502,7 +465,7 @@
      <property name="geometry">
       <rect>
        <x>160</x>
-       <y>274</y>
+       <y>280</y>
        <width>100</width>
        <height>16</height>
       </rect>
@@ -536,13 +499,6 @@
        <height>25</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
      <property name="text">
       <string>快捷键类型</string>
      </property>
@@ -551,7 +507,7 @@
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>50</y>
+       <y>60</y>
        <width>200</width>
        <height>20</height>
       </rect>
@@ -567,7 +523,7 @@
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>80</y>
+       <y>90</y>
        <width>200</width>
        <height>20</height>
       </rect>
@@ -583,7 +539,7 @@
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>182</y>
+       <y>200</y>
        <width>150</width>
        <height>22</height>
       </rect>
@@ -596,7 +552,7 @@
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>162</y>
+       <y>170</y>
        <width>500</width>
        <height>16</height>
       </rect>
@@ -614,13 +570,6 @@
        <height>25</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
      <property name="text">
       <string>键位设置</string>
      </property>
@@ -629,10 +578,13 @@
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>386</y>
+       <y>390</y>
        <width>150</width>
        <height>22</height>
       </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <item>
       <property name="text">
@@ -694,13 +646,6 @@
        <height>25</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
      <property name="text">
       <string>间隔时间</string>
      </property>
@@ -709,10 +654,13 @@
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>274</y>
+       <y>280</y>
        <width>150</width>
        <height>22</height>
       </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <item>
       <property name="text">
@@ -749,13 +697,6 @@
        <height>25</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
      <property name="text">
       <string>按压次数</string>
      </property>
@@ -782,9 +723,15 @@
        <x>40</x>
        <y>20</y>
        <width>685</width>
-       <height>192</height>
+       <height>450</height>
       </rect>
      </property>
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="verticalHeaderVisible">
+      <bool>false</bool>
+     </attribute>
      <row>
       <property name="text">
        <string>0</string>
@@ -846,13 +793,6 @@
        <height>25</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
      <property name="text">
       <string>开机启动</string>
      </property>
@@ -866,13 +806,6 @@
        <height>25</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
      <property name="text">
       <string>显示通知</string>
      </property>
@@ -881,7 +814,7 @@
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>50</y>
+       <y>60</y>
        <width>100</width>
        <height>20</height>
       </rect>
@@ -897,7 +830,7 @@
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>162</y>
+       <y>170</y>
        <width>100</width>
        <height>20</height>
       </rect>
@@ -913,10 +846,13 @@
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>274</y>
+       <y>280</y>
        <width>150</width>
        <height>22</height>
       </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <item>
       <property name="text">
@@ -937,13 +873,6 @@
        <width>600</width>
        <height>25</height>
       </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
      </property>
      <property name="text">
       <string>语言</string>
@@ -974,13 +903,6 @@
        <height>25</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
      <property name="text">
       <string>透明度</string>
      </property>
@@ -989,10 +911,13 @@
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>50</y>
+       <y>60</y>
        <width>150</width>
        <height>22</height>
       </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <item>
       <property name="text">
@@ -1034,13 +959,6 @@
        <height>25</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
      <property name="text">
       <string>圆角大小</string>
      </property>
@@ -1049,10 +967,13 @@
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>162</y>
+       <y>170</y>
        <width>150</width>
        <height>22</height>
       </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <item>
       <property name="text">
@@ -1119,13 +1040,6 @@
        <height>25</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
      <property name="text">
       <string>主题</string>
      </property>
@@ -1139,13 +1053,6 @@
        <height>25</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
      <property name="text">
       <string>搜索框与建议列表距离</string>
      </property>
@@ -1154,10 +1061,13 @@
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>274</y>
+       <y>280</y>
        <width>150</width>
        <height>22</height>
       </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <item>
       <property name="text">
@@ -1570,14 +1480,6 @@
       <height>20</height>
      </rect>
     </property>
-    <property name="font">
-     <font>
-      <family>Arial Black</family>
-      <pointsize>12</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-     </font>
-    </property>
     <property name="cursor">
      <cursorShape>PointingHandCursor</cursorShape>
     </property>
@@ -1594,14 +1496,6 @@
       <height>20</height>
      </rect>
     </property>
-    <property name="font">
-     <font>
-      <family>Arial Black</family>
-      <pointsize>12</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-     </font>
-    </property>
     <property name="cursor">
      <cursorShape>PointingHandCursor</cursorShape>
     </property>
@@ -1611,11 +1505,11 @@
    </widget>
    <zorder>pushButton_close</zorder>
    <zorder>pushButton_minimize</zorder>
-   <zorder>frame_basics</zorder>
+   <zorder>frame_advanced</zorder>
    <zorder>frame_appearance</zorder>
+   <zorder>frame_basics</zorder>
    <zorder>frame_search_other</zorder>
    <zorder>frame_hotkey</zorder>
-   <zorder>frame_advanced</zorder>
    <zorder>frame_engine_management</zorder>
   </widget>
   <widget class="QWidget" name="widget_up" native="true">

@@ -14,81 +14,72 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+from re import findall
 from json import loads
+from PyQt5.QtCore import QThread
 from requests import RequestException
 from requests.sessions import Session
 from PyQt5.QtCore import QObject, pyqtSignal
 
+_thread = QThread()
+_thread.start()
 
-class BaseSuggestionGetter(QObject):
+
+class BaseGetter(QObject):
     __signal = pyqtSignal(list)
-    _api_map = {}
 
-    def __init__(self, api=None, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
-        self.api = api
         self.__cached_data = {'': []}
-        self._session = Session()
-        self._session.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, ' \
-                                              'like Gecko) Chrome/65.0.3325.162 Safari/537.36 '
+        self.moveToThread(_thread)
 
     def get(self, keyword):
         keyword = keyword.strip()
         suggestions = self.__cached_data.get(keyword)
         if suggestions is None:
-            suggestions = self._get_from_network(keyword)
+            suggestions = self._custom_get(keyword)
             suggestions = suggestions if isinstance(suggestions, list) else []
             if suggestions:
                 self.__cached_data[keyword] = suggestions
         self.__signal.emit(suggestions)
 
-    def _get_from_network(self, text):
-        """
-        :param text: keyword text.
-        :return: suggestion list.
-        :rtype: list.
-        """
+    def _custom_get(self, text):
         raise NotImplementedError
 
     def clear_cache(self):
         self.__cached_data = {'': []}
 
     @property
-    def cache_size(self):
+    def cache_count(self):
         return sum([len(v) for v in self.__cached_data.values()])
-
-    @property
-    def api(self):
-        return self._api
-
-    @api.setter
-    def api(self, api_name):
-        self._api = api_name if self._api_map.get(api_name) else list(self._api_map.keys())[0]
-
-    @property
-    def api_list(self):
-        return list(self._api_map.keys())
 
     @property
     def signal(self):
         return self.__signal
 
 
-class KeywordSuggestionGetter(BaseSuggestionGetter):
-    _api_map = {'360': 'https://sug.so.360.cn/suggest/word?',
-                'baidu': '', 'sogou': ''}
-
+class WebGetter(BaseGetter):
     def __init__(self, api=None, parent=None):
-        super().__init__(api, parent)
+        super().__init__(parent)
+        self.__api_map = {self.QH360: 'https://sug.so.360.cn/suggest/word?',
+                          self.BAIDU: '',
+                          self.SOGOU: '',
+                          self.DOGEDOGE: 'https://www.dogedoge.com/sugg/'}
+        self.api = api
+        self._session = Session()
+        self._session.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, ' \
+                                              'like Gecko) Chrome/65.0.3325.162 Safari/537.36'
 
-    def _get_from_network(self, text):
+    def _custom_get(self, text):
         li = []
-        if '360' == self._api:
+        if self.QH360 == self.__api:
             li = self.__get_360_suggestions(text)
-        elif 'baidu' == self._api:
+        elif self.BAIDU == self.__api:
             li = self.__get_baidu_suggestions(text)
-        elif 'sogou' == self._api:
+        elif self.SOGOU == self.__api:
             li = self.__get_sogou_suggestions(text)
+        elif self.DOGEDOGE == self.__api:
+            li = self.__get_dogedoge_suggestions(text)
         return li
 
     def __get_360_suggestions(self, text):
@@ -98,7 +89,7 @@ class KeywordSuggestionGetter(BaseSuggestionGetter):
                   'word': text,
                   '_jsonp': 'suggest_so'}
         try:
-            r = self._session.get(self._api_map.get(self._api), params=params, timeout=3)
+            r = self._session.get(self.__api_map.get(self.__api), params=params, timeout=3)
         except RequestException:
             return []
         if 200 == r.status_code:
@@ -112,47 +103,68 @@ class KeywordSuggestionGetter(BaseSuggestionGetter):
     def __get_baidu_suggestions(self, text):
         params = {'wd': text}
         try:
-            r = self._session.get(self._api_map.get(self._api), params=params, timeout=3)
+            r = self._session.get(self.__api_map.get(self.__api), params=params, timeout=3)
         except RequestException:
             return []
         if 200 == r.status_code:
-            json = r.json()
-            if 'true' == json.get('p'):
-                return json.get('s')
+            return []
         return []
 
     def __get_sogou_suggestions(self, text):
         params = {'key': text}
         try:
-            r = self._session.get(self._api_map.get(self._api), params=params, timeout=3)
+            r = self._session.get(self.__api_map.get(self.__api), params=params, timeout=3)
         except RequestException:
             return []
         if 200 == r.status_code:
-            json = r.json()
-            if 'true' == json.get('p'):
-                return json.get('s')
+            return []
         return []
 
-
-class URLSuggestionGetter(BaseSuggestionGetter):
-    _api_map = {'360': 'https://sug.so.360.cn/suggest/word?'}
-
-    def __init__(self, api=None, parent=None):
-        super().__init__(api, parent)
-
-    def _get_from_network(self, text):
-        li = []
-        if '360' == self._api:
-            li = self.__get_360_suggestions(text)
-        return li
-
-    def __get_360_suggestions(self, text):
-        params = {'word': text}
+    def __get_dogedoge_suggestions(self, text):
         try:
-            r = self._session.get(self._api_map.get(self._api), params=params, timeout=3)
+            r = self._session.get('{}{}'.format(self.__api_map.get(self.__api), text), timeout=3)
         except RequestException:
             return []
         if 200 == r.status_code:
-            # parse html...
-            return []
+            return [s.replace('</span>', '') for s in findall(r't-normal">(.*?)</d', r.text)]
         return []
+
+    @property
+    def api(self):
+        return self.__api
+
+    @api.setter
+    def api(self, api_name):
+        self.__api = api_name if self.__api_map.get(api_name) else self.QH360
+
+    QH360 = 0
+    BAIDU = 1
+    SOGOU = 2
+    DOGEDOGE = 3
+    GOOGLE = 5
+
+
+#       Extra features
+# ↓↓↓ Waiting to be done ↓↓↓
+class LocalFileGetter(BaseGetter):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+    def _custom_get(self, text):
+        pass
+
+
+class TranslationGetter(BaseGetter):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+    def _custom_get(self, text):
+        pass
+
+
+class CalculationGetter(BaseGetter):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+    def _custom_get(self, text):
+        pass

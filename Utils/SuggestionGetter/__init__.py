@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Xpp521
+# Copyright (C) 2020 Xpp521
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,18 +17,26 @@
 """
 Usage:
     from PyQt5.QtCore import pyqtSignal
-    from SuggestionGetter import keyword_suggestion_getter as getter
+    from SuggestionGetter import WebGetter
 
 
     class A:
-        get_suggestion_signal = pyqtSignal(str)
+        suggestion_signal = pyqtSignal(str)
 
         def __init__(self):
-            self.get_suggestion_signal.connect(getter.get)
+            getter = WebGetter()
+
+            # switch suggestion provider
+            getter.api = SuggestionProvider.DOGEDOGE
+
+            # bind the signal to be emitted
+            self.suggestion_signal.connect(getter.get)
+
+            # bind callback function
             getter.signal.connect(self.__show_suggestions)
 
         def get_suggestions(keyword):
-            self.get_suggestion_signal.emit(keyword)
+            self.suggestion_signal.emit(keyword)
 
         def __show_suggestions(suggestions):
             print(suggestions)
@@ -37,12 +45,4 @@ Usage:
     a = A()
     a.get_suggestions('keyword')
 """
-from PyQt5.QtCore import QThread as __QThread
-# from .main import URLSuggestionGetter as __URLSuggestionGetter
-from .main import KeywordSuggestionGetter as __KeywordSuggestionGetter
-__thread = __QThread()
-__thread.start()
-keyword_suggestion_getter = __KeywordSuggestionGetter()
-keyword_suggestion_getter.moveToThread(__thread)
-# url_suggestion_getter = __URLSuggestionGetter()
-# url_suggestion_getter.moveToThread(__thread)
+from .getters import WebGetter

@@ -28,7 +28,7 @@ OPEN_SOURCE = 'https://github.com/Xpp521/XSearch'
 # Setting dialog start
 SETTING_DIALOG_TITLE = 'Setting'
 SETTING_BASICS = 'Basics'
-SETTING_HOTKEY = 'Hot key'
+SETTING_HOTKEY = 'Hotkey'
 SETTING_SEARCH = 'Search'
 SETTING_ENGINE_MANAGEMENT = 'Engine'
 SETTING_APPEARANCE = 'Appearance'
@@ -40,6 +40,10 @@ SETTING_LANGUAGE = 'Language'
 SETTING_SHOW_TIP = 'Show tip'
 SETTING_START_UP = 'Start up at boot'
 
+SETTING_KEYWORD = 'keyword'
+SETTING_ICON = 'icon'
+SETTING_URL = 'url'
+SETTING_SET_DEFAULT_ENGINE = 'Set as default engine'
 SETTING_TURN_ON = 'Turn on'
 SETTING_SUGGEST = 'Search suggestion'
 SETTING_SUGGEST_ENGINE = 'Suggestion provider'
@@ -52,7 +56,7 @@ SETTING_PRIVATE_MODE_TIP2 = 'Currently supported browsers: Chrome、FireFox.'
 SETTING_BROWSER_PATH = 'Browser path'
 SETTING_CHOOSE_BROWSER = 'Choose browser'
 
-SETTING_HOTKEY_TYPE = 'Hot key type'
+SETTING_HOTKEY_TYPE = 'Hotkey type'
 SETTING_SINGLE_KEY = 'Single keystroke'
 SETTING_MULTIPLE_KEY = 'Multiple keystrokes'
 SETTING_KEY_SETTING = 'Key setting'
@@ -77,7 +81,7 @@ SETTING_BORDER_COLOR = 'Border color'
 SETTING_SELECTED_COLOR = 'Selected color'
 SETTING_BACKGROUND_COLOR = 'Background color'
 
-SETTING_NO_SLEEP = 'No sleep'
+SETTING_NO_SLEEP = 'Prevent sleep'
 SETTING_BACKUP_AND_RECOVERY = 'Backup and recovery settings'
 SETTING_IMPORT_SETTING = 'Recovery'
 SETTING_CHOOSE_IMPORT = 'Choose import file'
@@ -89,6 +93,7 @@ SETTING_ENGLISH = 'English'
 SETTING_BAIDU = 'Baidu'
 SETTING_360 = '360'
 SETTING_SOGOU = 'Sogou'
+SETTING_DOGE = 'DogeDoge'
 # Setting dialog end
 
 # Tray icon start
@@ -98,5 +103,8 @@ TRAY_EXIT = 'Exit'
 # Tray icon end
 
 # Notification start
-TIP_WELCOME = 'XSearch is ready~!'
+TIP_WELCOME = 'XSearch is ready : )'
+TIP_TURN_ON_TIP = 'Notification turned on'
+TIP_ALLOW_SLEEP = 'Device sleep is available now'
+TIP_PREVENT_SLEEP = 'Device sleep has been turned off'
 # Notification end

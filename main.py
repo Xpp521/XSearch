@@ -36,7 +36,7 @@ class XSearch(SettingDialog):
         self.__update_hot_key()
         tray_icon.show()
         from Strings import Strings
-        self.__show_message(Strings.TIP_WELCOME)
+        self.__show_tip(Strings.TIP_WELCOME)
 
     def __update_hot_key(self):
         keys = []
@@ -65,7 +65,7 @@ class XSearch(SettingDialog):
         if not self.isVisible():
             self.popup()
 
-    def __show_message(self, msg):
+    def __show_tip(self, msg):
         if self._tip_state:
             from Strings import Strings
             if isinstance(msg, str):
@@ -79,14 +79,28 @@ class XSearch(SettingDialog):
 
     def _load_settings(self):
         super()._load_settings()
-        cache_count = self.__widgets.get('search').suggestion_getter.cache_size
+        cache_count = self.__widgets.get('search').suggestion_getter.cache_count
         self._ui.label_suggestion_cache_count2.setText(str(cache_count))
         self._ui.pushButton_suggestion_clear_cache.setEnabled(cache_count)
+
+    def _change_tip_state(self, checked):
+        from Strings import Strings
+        super()._change_tip_state(checked)
+        if checked:
+            self.__show_tip(Strings.TIP_TURN_ON_TIP)
 
     def _clear_suggestion_cache(self):
         self.__widgets.get('search').suggestion_getter.clear_cache()
         self._ui.label_suggestion_cache_count2.setText('0')
         self._ui.pushButton_suggestion_clear_cache.setEnabled(False)
+
+    def _change_no_sleep_state(self, checked):
+        super()._change_no_sleep_state(checked)
+        from Strings import Strings
+        if checked:
+            self.__show_tip(Strings.TIP_PREVENT_SLEEP)
+        else:
+            self.__show_tip(Strings.TIP_ALLOW_SLEEP)
 
     def reload_ui(self, text=True, qss=True):
         super().reload_ui(text, qss)

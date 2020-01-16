@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Xpp521
+# Copyright (C) 2020 Xpp521
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,31 +14,4 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-"""
-NoSleepWorker
-~~~~~~~~~~~~~
-This module can prevent devices from sleeping.
-
-Usage:
-    from NoSleepWorker import Worker
-
-    worker = Worker()
-
-    # start
-    worker.start()
-
-    # show working state
-    print(worker.isWorking)
-
-    # suspend
-    worker.suspend()
-
-    # resume
-    worker.resume()
-"""
-from sys import platform
-
-if 'win' == platform[:3]:
-    from .Workers import WindowsWorker as Worker
-else:
-    from .Workers import KeyBoardWorker as Worker
+from .ListModel import ListModel
