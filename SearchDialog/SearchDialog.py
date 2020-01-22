@@ -106,7 +106,7 @@ class SearchDialog(QDialog):
                 self.__browser.args.append('')
 
     def __change_search_engine(self, index):
-        self.__ui.label.setPixmap(QPixmap(join('Icons', self.__engine_icons[index])).scaled(20, 20))
+        self.__ui.label.setPixmap(QPixmap(self.__engine_icons[index]).scaled(20, 20))
         self.__cur_engine = self.__engines[index]
 
     def __on_text_edited(self, text):

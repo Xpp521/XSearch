@@ -16,31 +16,36 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from os.path import join
 from json import load, dump
-from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtGui import QIcon
 from sys import modules, platform
 from pynput.keyboard import Listener
 from PyQt5.QtCore import Qt, QSettings
 from Utils.NoSleepWorker import Worker
 from .SettingDialog_ui import Ui_Dialog
 from Utils.SuggestionGetter import WebGetter
-from PyQt5.QtWidgets import QDialog, QFileDialog, QTableWidgetItem
+from PyQt5.QtWidgets import QDialog, QFileDialog
 
 
 class SettingDialog(QDialog):
     default_setting = {
-        'StartupState': '1',
         'TipState': '1',
+        'StartupState': '1',
         'Language/index': '0',
         'Language/data': 'cn',
-        'SearchEngine/count': '8',
-        'SearchEngine/engines/0': 'baidu||baidu.png||https://www.baidu.com/s?ie=utf-8&wd=%s',
-        'SearchEngine/engines/1': 'google||google.png||https://www.google.com/search?q=%s',
-        'SearchEngine/engines/2': 'bing||bing.png||http://www.bing.com/search?q=%s',
-        'SearchEngine/engines/3': 'bingcn||bing.png||http://cn.bing.com/search?q=%s',
-        'SearchEngine/engines/4': '360||360.png||https://www.so.com/s?ie=utf-8&q=%s',
-        'SearchEngine/engines/5': 'sogou||sogou.png||https://www.sogou.com/web?ie=utf8&query=%s',
-        'SearchEngine/engines/6': 'toutiao||toutiao.png||https://m.toutiao.com/search/?&keyword=%s',
-        'SearchEngine/engines/7': 'yandex||yandex.png||https://yandex.com/search/?text=%s',
+        'SearchEngine/count': '9',
+        'SearchEngine/engines/0': 'baidu||{}||https://www.baidu.com/s?ie=utf-8&wd=%s'.format(join('Icons',
+                                                                                                  'baidu.png')),
+        'SearchEngine/engines/1': 'google||{}||https://www.google.com/search?q=%s'.format(join('Icons', 'google.png')),
+        'SearchEngine/engines/2': 'bing||{}||http://www.bing.com/search?q=%s'.format(join('Icons', 'bing.png')),
+        'SearchEngine/engines/3': 'cnbing||{}||http://cn.bing.com/search?q=%s'.format(join('Icons', 'bing.png')),
+        'SearchEngine/engines/4': '360||{}||https://www.so.com/s?ie=utf-8&q=%s'.format(join('Icons', '360.png')),
+        'SearchEngine/engines/5': 'sogou||{}||https://www.sogou.com/web?ie=utf8&query=%s'.format(join('Icons',
+                                                                                                      'sogou.png')),
+        'SearchEngine/engines/6': 'toutiao||{}||https://m.toutiao.com/search/?&keyword=%s'.format(join('Icons',
+                                                                                                       'toutiao.png')),
+        'SearchEngine/engines/7': 'yandex||{}||https://yandex.com/search/?text=%s'.format(join('Icons', 'yandex.png')),
+        'SearchEngine/engines/8': 'douban||{}||https://search.douban.com/movie/subject_search?search_text=%s'.format(
+            join('Icons', 'douban.png')),
         'SearchEngine/default_engine_index': '0',
         'SuggestionState': '1',
         'SuggestionProvider/index': '0',
@@ -48,10 +53,10 @@ class SettingDialog(QDialog):
         'BrowserPath': '',
         'PrivateMode': '0',
         'Hotkey/keys': 'caps_lock',
-        'Hotkey/repetitions': '2',
         'Hotkey/interval': '0.5',
-        'Ui/opacity': '0.9',
+        'Hotkey/repetitions': '2',
         'Ui/distance': '3',
+        'Ui/opacity': '0.9',
         'Ui/theme_index': '0',
         'Ui/border_radius': '0',
         'Ui/font_color': 'black',
@@ -64,11 +69,12 @@ class SettingDialog(QDialog):
 
     def __init__(self):
         super().__init__()
-        self.__setting_changed = False
         self.__is_moving = False
-        self.__dialog_pos = None
         self.__mouse_pos = None
+        self.__dialog_pos = None
+        self.__selected_row = 0
         self.__pressed_keys = []
+        self.__setting_changed_manually = True
         self._setting = QSettings()
         self.__check_settings()
         self._ui = Ui_Dialog()
@@ -89,9 +95,10 @@ class SettingDialog(QDialog):
             self.__worker.suspend()
 
     def __check_settings(self):
-        for name, setting in self.default_setting.items():
-            if not self._setting.value(name):
-                self._setting.setValue(name, setting)
+        if not self._setting.value('TipState'):
+            for name, setting in self.default_setting.items():
+                if not self._setting.value(name):
+                    self._setting.setValue(name, setting)
 
     def _change_startup_state(self, checked):
         if 'win' == platform[:3]:
@@ -118,6 +125,43 @@ class SettingDialog(QDialog):
         self._setting.setValue('Language/data', self._ui.comboBox_language.currentData())
         modules.pop('Strings')
         self.reload_ui(qss=False)
+
+    def _change_engine_data(self, item):
+        if self.__setting_changed_manually:
+            row = item.index().row()
+            engine_data = [self._ui.model.data(self._ui.model.index(row, 0)),
+                           self._ui.model.data(self._ui.model.index(row, 1)),
+                           self._ui.model.data(self._ui.model.index(row, 2))]
+            if int(self._setting.value('SearchEngine/count')) == row:
+                if all(engine_data):
+                    self._setting.setValue('SearchEngine/count', str(row + 1))
+                    self._setting.setValue('SearchEngine/engines/{}'.format(row), '||'.join(engine_data))
+                    self._ui.model.setRowCount(row + 2)
+            else:
+                self._setting.setValue('SearchEngine/engines/{}'.format(row), '||'.join(engine_data))
+
+    def _change_default_engine(self):
+        self._setting.setValue('SearchEngine/default_engine_index', str(self.__selected_row))
+
+    def _delete_engine(self):
+        self.__setting_changed_manually = False
+        last_index = int(self._setting.value('SearchEngine/count')) - 1
+        last_engine_data = self._setting.value('SearchEngine/engines/{}'.format(last_index))
+        kw, icon, url = last_engine_data.split('||')
+        if last_index != self.__selected_row:
+            self._setting.setValue('SearchEngine/engines/{}'.format(self.__selected_row), last_engine_data)
+            self._ui.model.setData(self._ui.model.index(self.__selected_row, 0), kw)
+            self._ui.model.setData(self._ui.model.index(self.__selected_row, 1), icon)
+            self._ui.model.setData(self._ui.model.index(self.__selected_row, 1), QIcon(icon), Qt.DecorationRole)
+            self._ui.model.setData(self._ui.model.index(self.__selected_row, 2), url)
+        self._setting.setValue('SearchEngine/count', str(last_index))
+        self._setting.remove('SearchEngine/engines/{}'.format(last_index))
+        self._ui.model.setData(self._ui.model.index(last_index, 0), '')
+        self._ui.model.setData(self._ui.model.index(last_index, 1), '')
+        self._ui.model.setData(self._ui.model.index(last_index, 1), None, Qt.DecorationRole)
+        self._ui.model.setData(self._ui.model.index(last_index, 2), '')
+        self._ui.model.setRowCount(last_index + 1)
+        self.__setting_changed_manually = True
 
     def _change_suggestion_state(self, checked):
         self._ui.comboBox_suggestion_engine.setEnabled(checked)
@@ -169,7 +213,7 @@ class SettingDialog(QDialog):
         theme_color = '#{}'.format(hex(button_color.rgb())[-6:])
         if '#1f1f1f' == theme_color:
             font_color = 'white'
-            selected_color = '#91c9f7'
+            selected_color = '#71b7e6'
             background_color = '#1f1f1f'
         else:
             font_color = 'black'
@@ -238,6 +282,10 @@ class SettingDialog(QDialog):
         self._ui.checkBox_show_tip.clicked.connect(self._change_tip_state)
         self._ui.comboBox_language.currentIndexChanged.connect(self._change_language)
 
+        self._ui.model.itemChanged.connect(self._change_engine_data)
+        self._ui.tableView_search_engine.customContextMenuRequested.connect(self.__popup_menu)
+        self._ui.table_menu.setActionHandler('set_default_engine', self._change_default_engine)
+        self._ui.table_menu.setActionHandler('delete', self._delete_engine)
         self._ui.checkBox_search_suggestion.clicked.connect(self._change_suggestion_state)
         self._ui.comboBox_suggestion_engine.currentIndexChanged.connect(self._change_suggestion_provider)
         self._ui.pushButton_suggestion_clear_cache.clicked.connect(self._clear_suggestion_cache)
@@ -305,16 +353,18 @@ class SettingDialog(QDialog):
                 self._ui.frame_advanced.raise_()
 
     def _load_settings(self):
+        self.__setting_changed_manually = False
         self._ui.checkBox_start_up.setChecked(int(self._setting.value('StartupState')))
         self._ui.checkBox_show_tip.setChecked(self._tip_state)
         self._ui.comboBox_language.setCurrentIndex(int(self._setting.value('Language/index')))
         row = int(self._setting.value('SearchEngine/count'))
-        self._ui.tableWidget_search_engine.setRowCount(row)
+        self._ui.model.setRowCount(row + 1)
         for i in range(row):
             kw, icon, url = self._setting.value('SearchEngine/engines/{}'.format(i)).split('||')
-            self._ui.tableWidget_search_engine.setItem(i, 0, QTableWidgetItem(kw))
-            self._ui.tableWidget_search_engine.setItem(i, 1, QTableWidgetItem(QIcon(join('Icons', icon)), ''))
-            self._ui.tableWidget_search_engine.setItem(i, 2, QTableWidgetItem(url))
+            self._ui.model.setData(self._ui.model.index(i, 0), kw)
+            self._ui.model.setData(self._ui.model.index(i, 1), icon)
+            self._ui.model.setData(self._ui.model.index(i, 1), QIcon(icon), Qt.DecorationRole)
+            self._ui.model.setData(self._ui.model.index(i, 2), url)
         suggestion_state = int(self._setting.value('SuggestionState'))
         self._ui.checkBox_search_suggestion.setChecked(suggestion_state)
         self._ui.comboBox_suggestion_engine.setEnabled(suggestion_state)
@@ -335,6 +385,7 @@ class SettingDialog(QDialog):
         self._ui.comboBox_fillet.setCurrentText(self._setting.value('Ui/border_radius'))
         self._ui.comboBox_distance.setCurrentText(self._setting.value('Ui/distance'))
         self._ui.checkBox_no_sleep.setChecked(int(self._setting.value('NoSleepState')))
+        self.__setting_changed_manually = True
 
     def reload_ui(self, text=True, qss=True):
         """
@@ -345,9 +396,11 @@ class SettingDialog(QDialog):
         if text:
             self._ui.retranslateUi(self)
         if qss:
+            font_color = self._setting.value('Ui/font_color')
             theme_color = self._setting.value('Ui/theme_color')
             border_color = self._setting.value('Ui/border_color')
             border_radius = self._setting.value('Ui/border_radius')
+            border_radius_s = str(int(border_radius) * 0.5)
             selected_color = self._setting.value('Ui/selected_color')
             background_color = self._setting.value('Ui/background_color')
             self._ui.widget_up.setStyleSheet('''.QWidget {{
@@ -378,6 +431,7 @@ class SettingDialog(QDialog):
             .QWidget QLineEdit {border: 2px solid; border-color: {border_color}; border-radius: {border_radius_s}px;}
             .QWidget QLineEdit:focus {border-color: {theme_color};}
             .QWidget QPushButton {
+            font-weight: 900;
             color: {theme_color};
             outline: none;
             background-color: {button_color1};
@@ -385,7 +439,7 @@ class SettingDialog(QDialog):
             }
             .QWidget QPushButton:hover {background-color: {button_color2};}
             .QWidget QPushButton:pressed {background-color: {button_color3};}
-            .QWidget QPushButton:!enabled {font-weight: 900; color: {border_color};}
+            .QWidget QPushButton:!enabled {color: {border_color};}
             .QWidget QComboBox {border: 1px solid {theme_color}; border-radius: {border_radius_s}px;}
             .QWidget QComboBox QAbstractItemView {border: 1px solid {theme_color};}
             .QWidget QComboBox:!enabled {border: 1px solid {border_color}; background-color: #e1e1e1;}
@@ -405,7 +459,7 @@ class SettingDialog(QDialog):
             }'''
             right_qss = right_qss.replace('{theme_color}', theme_color).replace('{border_color}', border_color)
             right_qss = right_qss.replace('{border_radius}', border_radius).replace('{border_radius_s}',
-                                                                                    str(int(border_radius) * 0.5))
+                                                                                    border_radius_s)
             right_qss = right_qss.replace('{button_color1}', theme_color.replace('#', '#26'))
             right_qss = right_qss.replace('{button_color2}', theme_color.replace('#', '#3F'))
             right_qss = right_qss.replace('{button_color3}', theme_color.replace('#', '#59'))
@@ -452,6 +506,30 @@ class SettingDialog(QDialog):
             }}
             .QPushButton:hover {{color: white;}}
             .QPushButton:pressed {{font: 16px;}}'''.format(border_radius))
+            self._ui.tableView_search_engine.setStyleSheet('''.QTableView {{
+            outline: none;
+            border: 1px solid {};
+            }}
+            .QTableView::item {{min-height: 30px; border-radius: {}px;}}
+            .QTableView::item:selected {{
+            background-color: {};
+            }}'''.format(theme_color, border_radius_s, selected_color))
+            self._ui.table_menu.setStyleSheet('''QMenu {{
+            color: {};
+            font: 17px;
+            padding:3px 3px;
+            border: 1px solid {};
+            background-color: {};
+            }}
+            QMenu::item {{
+            margin:1px 1px;
+            border-radius: {}px;
+            padding:8px 20px 8px 0;
+            background-color: transparent;
+            }}
+            QMenu::item:selected {{
+            background-color: {};
+            }}'''.format(font_color, border_color, background_color, border_radius, selected_color))
             self._ui.frame_appearance.setStyleSheet('''#groupBox_custom {{border: none;}}
             QPushButton {{outline: none; border-radius: {}px;}}
             #pushButton_blue {{background-color: #3498db;}}
@@ -479,7 +557,20 @@ class SettingDialog(QDialog):
         self.show()
 
     def _hide_dialog(self):
+        row = self._ui.model.rowCount() - 1
+        self._ui.model.clearItemData(self._ui.model.index(row, 0))
+        self._ui.model.clearItemData(self._ui.model.index(row, 1))
+        self._ui.model.clearItemData(self._ui.model.index(row, 2))
+        self._ui.tableView_search_engine.clearSelection()
         self.hide()
+
+    def __popup_menu(self, point):
+        selected_row = self._ui.tableView_search_engine.indexAt(point).row()
+        if selected_row in (-1, self._ui.model.rowCount() - 1):
+            return
+        self.__selected_row = selected_row
+        point.setY(point.y() + 35)
+        self._ui.table_menu.popup(self._ui.tableView_search_engine.mapToGlobal(point))
 
     def __mouse_press_event(self, event):
         if Qt.LeftButton == event.button():

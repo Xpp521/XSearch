@@ -717,14 +717,32 @@
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="QTableWidget" name="tableWidget_search_engine">
+    <widget class="QTableView" name="tableView_search_engine">
      <property name="geometry">
       <rect>
        <x>40</x>
        <y>20</y>
        <width>685</width>
-       <height>450</height>
+       <height>500</height>
       </rect>
+     </property>
+     <property name="contextMenuPolicy">
+      <enum>Qt::CustomContextMenu</enum>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::DoubleClicked|QAbstractItemView::SelectedClicked</set>
+     </property>
+     <property name="tabKeyNavigation">
+      <bool>false</bool>
+     </property>
+     <property name="showDropIndicator" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="cornerButtonEnabled">
+      <bool>false</bool>
      </property>
      <attribute name="horizontalHeaderStretchLastSection">
       <bool>true</bool>
@@ -732,41 +750,12 @@
      <attribute name="verticalHeaderVisible">
       <bool>false</bool>
      </attribute>
-     <row>
-      <property name="text">
-       <string>0</string>
-      </property>
-     </row>
-     <column>
-      <property name="text">
-       <string>关键词</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>图标</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>网址</string>
-      </property>
-     </column>
-     <item row="0" column="0">
-      <property name="text">
-       <string>baidu</string>
-      </property>
-     </item>
-     <item row="0" column="1">
-      <property name="text">
-       <string>baidu.png</string>
-      </property>
-     </item>
-     <item row="0" column="2">
-      <property name="text">
-       <string>https://www.baidu.com/s?wd=%s</string>
-      </property>
-     </item>
+     <attribute name="verticalHeaderCascadingSectionResizes">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="verticalHeaderDefaultSectionSize">
+      <number>0</number>
+     </attribute>
     </widget>
    </widget>
    <widget class="QFrame" name="frame_basics">

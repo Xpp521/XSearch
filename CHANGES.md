@@ -1,3 +1,6 @@
+## v1.0.0
+- The first stable version.
+
 ## v0.0.2
 #### Features
 - Add GPL license.

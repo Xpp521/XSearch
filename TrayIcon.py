@@ -15,37 +15,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from os.path import join
-from PyQt5.QtCore import Qt
 from PyQt5.Qt import QCursor
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QSettings
-from PyQt5.QtWidgets import QApplication, QAction, QMenu, QSystemTrayIcon
+from Utils.Widgets import SingleLevelMenu
+from PyQt5.QtWidgets import QSystemTrayIcon
 
 
 class TrayIcon(QSystemTrayIcon):
     def __init__(self):
         super().__init__()
-        menu = QMenu()
-        menu.setWindowFlags(Qt.Popup | Qt.FramelessWindowHint)
-        menu.setAttribute(Qt.WA_TranslucentBackground)
-        action_show = QAction(QIcon(join('Icons', 'search.png')), '', menu)
-        action_setting = QAction(QIcon(join('Icons', 'setting.png')), '', menu)
-        action_separator = QAction(menu)
-        action_separator.setSeparator(True)
-        action_exit = QAction(QIcon(join('Icons', 'exit.png')), '', menu, triggered=QApplication.instance().quit)
-        self.actions = {'search': action_show, 'setting': action_setting, 'exit': action_exit}
-        menu.addActions((action_show, action_setting, action_separator, action_exit))
+        menu = SingleLevelMenu(['search', 'setting', None, 'exit'],
+                               [join('Icons', 'search.png'), join('Icons', 'setting.png'),
+                                None, join('Icons', 'exit.png')])
+        self.actions = menu.actions
+        self.setActionHandler = menu.setActionHandler
         self.setContextMenu(menu)
         self.__cursor = QCursor()
         self.activated.connect(lambda: menu.popup(self.__cursor.pos()))
         self.reload_ui()
-
-    def set_action_handler(self, action_name, handler):
-        action = self.actions.get(action_name)
-        if isinstance(action, QAction) and callable(handler):
-            action.triggered.connect(handler)
-            return True
-        return False
 
     def reload_ui(self, text=True, qss=True):
         if text:

@@ -12,5 +12,9 @@ This tool can improve your search efficiency and prevent your device from sleepi
 ### Usage
 Double click "Caps lock", start your search journey.
 
-### Screen shot
-![XSearch screen shot](https://raw.githubusercontent.com/Xpp521/Images/master/XSearch.jpg)
+### Screenshot
+#### Search dialog
+![Search dialog](https://raw.githubusercontent.com/Xpp521/Images/master/XSearch1.png)
+
+#### Setting dialog
+![Setting dialog](https://raw.githubusercontent.com/Xpp521/Images/master/XSearch0.png)

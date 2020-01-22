@@ -23,7 +23,8 @@
 from os.path import join
 from PyQt5 import QtCore, QtWidgets
 from Utils.SuggestionGetter import WebGetter
-from PyQt5.QtGui import QIcon, QFont, QCursor
+from Utils.Widgets import IconDelegate, SingleLevelMenu
+from PyQt5.QtGui import QIcon, QFont, QCursor, QStandardItemModel
 
 
 class Ui_Dialog(object):
@@ -130,8 +131,8 @@ class Ui_Dialog(object):
         self.comboBox_suggestion_engine.setObjectName("comboBox_suggestion_engine")
         self.comboBox_suggestion_engine.addItem("")
         self.comboBox_suggestion_engine.addItem("")
-        self.comboBox_suggestion_engine.addItem("")
-        self.comboBox_suggestion_engine.addItem("")
+        # self.comboBox_suggestion_engine.addItem("")
+        # self.comboBox_suggestion_engine.addItem("")
         self.label_search_suggestion = QtWidgets.QLabel(self.frame_search_other)
         self.label_search_suggestion.setGeometry(QtCore.QRect(40, 20, 600, 25))
         self.label_search_suggestion.setObjectName("label_search_suggestion")
@@ -215,13 +216,24 @@ class Ui_Dialog(object):
         self.frame_engine_management.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_engine_management.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_engine_management.setObjectName("frame_engine_management")
-        self.tableWidget_search_engine = QtWidgets.QTableWidget(self.frame_engine_management)
-        self.tableWidget_search_engine.setGeometry(QtCore.QRect(40, 20, 685, 450))
-        self.tableWidget_search_engine.setObjectName("tableWidget_search_engine")
-        self.tableWidget_search_engine.setColumnCount(3)
-        # self.tableWidget_search_engine.setRowCount(1)
-        self.tableWidget_search_engine.horizontalHeader().setStretchLastSection(True)
-        self.tableWidget_search_engine.verticalHeader().setVisible(False)
+        self.tableView_search_engine = QtWidgets.QTableView(self.frame_engine_management)
+        self.tableView_search_engine.setGeometry(QtCore.QRect(40, 20, 685, 500))
+        self.tableView_search_engine.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.tableView_search_engine.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+        self.tableView_search_engine.setEditTriggers(
+            QtWidgets.QAbstractItemView.DoubleClicked | QtWidgets.QAbstractItemView.SelectedClicked)
+        self.tableView_search_engine.setTabKeyNavigation(False)
+        self.tableView_search_engine.setProperty("showDropIndicator", False)
+        self.tableView_search_engine.setCornerButtonEnabled(False)
+        self.tableView_search_engine.setObjectName("tableView_search_engine")
+        self.tableView_search_engine.horizontalHeader().setStretchLastSection(True)
+        self.tableView_search_engine.verticalHeader().setVisible(False)
+        self.tableView_search_engine.verticalHeader().setCascadingSectionResizes(True)
+        self.tableView_search_engine.verticalHeader().setDefaultSectionSize(35)
+        self.model = QStandardItemModel()
+        self.model.setColumnCount(3)
+        self.tableView_search_engine.setModel(self.model)
+        self.table_menu = SingleLevelMenu(['set_default_engine', None, 'delete'], parent=self.tableView_search_engine)
         self.frame_basics = QtWidgets.QFrame(self.widget_right)
         self.frame_basics.setGeometry(QtCore.QRect(0, 50, 765, 600))
         self.frame_basics.setFrameShape(QtWidgets.QFrame.StyledPanel)
@@ -471,9 +483,9 @@ class Ui_Dialog(object):
         self.pushButton_browser_path.setText('...')
         self.label_suggestion_engine.setText(Strings.SETTING_SUGGEST_ENGINE)
         self.comboBox_suggestion_engine.setItemText(0, Strings.SETTING_360)
-        self.comboBox_suggestion_engine.setItemText(1, Strings.SETTING_BAIDU)
-        self.comboBox_suggestion_engine.setItemText(2, Strings.SETTING_SOGOU)
-        self.comboBox_suggestion_engine.setItemText(3, Strings.SETTING_DOGE)
+        # self.comboBox_suggestion_engine.setItemText(1, Strings.SETTING_BAIDU)
+        # self.comboBox_suggestion_engine.setItemText(2, Strings.SETTING_SOGOU)
+        self.comboBox_suggestion_engine.setItemText(1, Strings.SETTING_DOGE)
         self.label_search_suggestion.setText(Strings.SETTING_SUGGEST)
         self.checkBox_search_suggestion.setText(Strings.SETTING_TURN_ON)
         self.label_language.setText(Strings.SETTING_LANGUAGE)
@@ -545,9 +557,9 @@ class Ui_Dialog(object):
         self.label_repetitions.setText(Strings.SETTING_REPETITIONS)
         self.label_key_setting.setText(Strings.SETTING_KEY_SETTING)
         self.comboBox_suggestion_engine.setItemData(0, WebGetter.QH360)
-        self.comboBox_suggestion_engine.setItemData(1, WebGetter.BAIDU)
-        self.comboBox_suggestion_engine.setItemData(2, WebGetter.SOGOU)
-        self.comboBox_suggestion_engine.setItemData(3, WebGetter.DOGEDOGE)
+        # self.comboBox_suggestion_engine.setItemData(1, WebGetter.BAIDU)
+        # self.comboBox_suggestion_engine.setItemData(2, WebGetter.SOGOU)
+        self.comboBox_suggestion_engine.setItemData(1, WebGetter.DOGEDOGE)
         self.comboBox_language.setItemData(0, 'cn')
         self.comboBox_language.setItemData(1, 'en')
         self.label_suggestion_clear_cache.setText(Strings.SETTING_SUGGESTION_CLEAR_CACHE)
@@ -556,6 +568,10 @@ class Ui_Dialog(object):
         self.label_backup.setText(Strings.SETTING_BACKUP_AND_RECOVERY)
         self.pushButton_import_settings.setText(Strings.SETTING_IMPORT_SETTING)
         self.pushButton_export_settings.setText(Strings.SETTING_EXPORT_SETTING)
-        self.tableWidget_search_engine.setHorizontalHeaderItem(0, QtWidgets.QTableWidgetItem(Strings.SETTING_KEYWORD))
-        self.tableWidget_search_engine.setHorizontalHeaderItem(1, QtWidgets.QTableWidgetItem(Strings.SETTING_ICON))
-        self.tableWidget_search_engine.setHorizontalHeaderItem(2, QtWidgets.QTableWidgetItem(Strings.SETTING_URL))
+        self.model.setHorizontalHeaderLabels([Strings.SETTING_KEYWORD, Strings.SETTING_ICON, Strings.SETTING_URL])
+        self.tableView_search_engine.setItemDelegateForColumn(1,
+                                                              IconDelegate(Strings.SETTING_SELECT_ICON,
+                                                                           filter='*.ico;*.jpg;*.png',
+                                                                           parent=self.tableView_search_engine))
+        self.table_menu.actions.get('set_default_engine').setText(Strings.SETTING_SET_DEFAULT_ENGINE)
+        self.table_menu.actions.get('delete').setText(Strings.SETTING_DELETE)

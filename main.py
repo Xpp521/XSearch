@@ -18,17 +18,18 @@ from TrayIcon import TrayIcon
 from PyHotKey import manager, Key
 from SearchDialog import SearchDialog
 from SettingDialog import SettingDialog
+from PyQt5.QtWidgets import QApplication
 
 
 class XSearch(SettingDialog):
-
     def __init__(self):
         super().__init__()
         self.__setting_changed = False
         search_dialog = SearchDialog()
         tray_icon = TrayIcon()
-        if not all((tray_icon.set_action_handler('search', self.__show_search_dialog),
-                    tray_icon.set_action_handler('setting', self.__show_setting_dialog))):
+        if not all((tray_icon.setActionHandler('search', self.__show_search_dialog),
+                    tray_icon.setActionHandler('setting', self.__show_setting_dialog),
+                    tray_icon.setActionHandler('exit', QApplication.instance().quit))):
             raise ConnectionError("Tray icon's handler connection failed.")
         self.__widgets = {'tray_icon': tray_icon, 'search': search_dialog}
         self.__hotkey_manager = manager

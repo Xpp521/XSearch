@@ -80,6 +80,8 @@ class WebGetter(BaseGetter):
             li = self.__get_sogou_suggestions(text)
         elif self.DOGEDOGE == self.__api:
             li = self.__get_dogedoge_suggestions(text)
+        elif self.GOOGLE == self.__api:
+            li = self.__get_google_suggestions(text)
         return li
 
     def __get_360_suggestions(self, text):
@@ -128,6 +130,9 @@ class WebGetter(BaseGetter):
         if 200 == r.status_code:
             return [s.replace('</span>', '') for s in findall(r't-normal">(.*?)</d', r.text)]
         return []
+
+    def __get_google_suggestions(self, text):
+        pass
 
     @property
     def api(self):
