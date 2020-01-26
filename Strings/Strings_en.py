@@ -17,13 +17,7 @@
 """
 The strings in the program. English version.
 """
-
-# Basic string start
-APP_NAME = 'XSearch'
-AUTHOR = 'Xpp'
-AUTHOR_EMAIL = 'Xpp233@foxmail.com'
-OPEN_SOURCE = 'https://github.com/Xpp521/XSearch'
-# Basic string end
+from ._info import *
 
 # Setting dialog start
 SETTING_DIALOG_TITLE = 'Setting'
@@ -89,6 +83,25 @@ SETTING_IMPORT_SETTING = 'Restore'
 SETTING_CHOOSE_IMPORT = 'Choose import file'
 SETTING_EXPORT_SETTING = 'Backup'
 SETTING_CHOOSE_EXPORT = 'Choose export path'
+
+SETTING_UPDATE = 'Update'
+SETTING_CUR_VERSION = VERSION
+SETTING_CUR_VERSION_TIP = 'Current version: '
+SETTING_CHECK_UPDATE = 'Check update'
+SETTING_CHECK_UPDATE_TIP1 = 'Checking...'
+SETTING_CHECK_UPDATE_TIP2 = '<style>a{{color:black;}}</style>New version available: ' \
+                            '<a href="{}">Download manually</a>'.format(RELEASE_ADDRESS)
+SETTING_CHECK_UPDATE_TIP3 = 'No new version'
+SETTING_CHECK_UPDATE_TIP5 = 'Network error'
+SETTING_OPEN_SOURCE = 'Open source'
+SETTING_OPEN_SOURCE_TIP = 'This software code has been open source, welcome star~'
+SETTING_OPEN_SOURCE_ADDRESS = OPEN_SOURCE_ADDRESS
+SETTING_OPEN_SOURCE_ADDRESS_TIP = 'Address: '
+SETTING_AUTHOR_DATA = 'Author message'
+SETTING_AUTHOR_NAME = AUTHOR_NAME
+SETTING_AUTHOR_NAME_TIP = 'Name: '
+SETTING_EMAIL = AUTHOR_EMAIL
+SETTING_EMAIL_TIP = 'Email: '
 
 SETTING_SIMPLIFIED_CHINESE = 'Simplified Chinese'
 SETTING_ENGLISH = 'English'

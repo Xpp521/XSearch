@@ -28,10 +28,10 @@ _thread.start()
 class BaseGetter(QObject):
     __signal = pyqtSignal(list)
 
-    def __init__(self, parent=None):
-        super().__init__(parent)
+    def __init__(self, thread=None):
+        super().__init__()
         self.__cached_data = {'': []}
-        self.moveToThread(_thread)
+        self.moveToThread(thread if isinstance(thread, QThread) else _thread)
 
     def get(self, keyword):
         keyword = keyword.strip()
@@ -59,8 +59,8 @@ class BaseGetter(QObject):
 
 
 class WebGetter(BaseGetter):
-    def __init__(self, api=None, parent=None):
-        super().__init__(parent)
+    def __init__(self, api=None, thread=None):
+        super().__init__(thread)
         self.__api_map = {self.QH360: 'https://sug.so.360.cn/suggest/word?',
                           self.BAIDU: '',
                           self.SOGOU: '',
@@ -132,7 +132,14 @@ class WebGetter(BaseGetter):
         return []
 
     def __get_google_suggestions(self, text):
-        pass
+        params = {'key': text}
+        try:
+            r = self._session.get(self.__api_map.get(self.__api), params=params, timeout=3)
+        except RequestException:
+            return []
+        if 200 == r.status_code:
+            return []
+        return []
 
     @property
     def api(self):
@@ -152,24 +159,24 @@ class WebGetter(BaseGetter):
 #       Extra features
 # ↓↓↓ Waiting to be done ↓↓↓
 class LocalFileGetter(BaseGetter):
-    def __init__(self, parent=None):
-        super().__init__(parent)
+    def __init__(self, thread=None):
+        super().__init__(thread)
 
     def _custom_get(self, text):
         pass
 
 
 class TranslationGetter(BaseGetter):
-    def __init__(self, parent=None):
-        super().__init__(parent)
+    def __init__(self, thread=None):
+        super().__init__(thread)
 
     def _custom_get(self, text):
         pass
 
 
 class CalculationGetter(BaseGetter):
-    def __init__(self, parent=None):
-        super().__init__(parent)
+    def __init__(self, thread=None):
+        super().__init__(thread)
 
     def _custom_get(self, text):
         pass

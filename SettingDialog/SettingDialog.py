@@ -15,18 +15,58 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from os.path import join
+from requests import get
 from json import load, dump
+from lxml.etree import HTML
 from PyQt5.QtGui import QIcon
 from sys import modules, platform
 from pynput.keyboard import Listener
-from PyQt5.QtCore import Qt, QSettings
 from Utils.NoSleepWorker import Worker
 from .SettingDialog_ui import Ui_Dialog
 from Utils.SuggestionGetter import WebGetter
 from PyQt5.QtWidgets import QDialog, QFileDialog
+from requests.exceptions import RequestException
+from PyQt5.QtCore import Qt, QObject, QThread, pyqtSignal, QSettings
+
+_thread = QThread()
+_thread.start()
+
+
+class NewVersionChecker(QObject):
+    __signal = pyqtSignal(int)
+
+    def __init__(self, thread=None):
+        super().__init__()
+        self.moveToThread(thread if isinstance(thread, QThread) else _thread)
+
+    def check(self, *args, **kwargs):
+        from Strings import Strings
+        self.__signal.emit(self.CHECKING)
+        try:
+            r = get(Strings.RELEASE_ADDRESS, timeout=11)
+        except RequestException:
+            self.__signal.emit(self.ERROR)
+            return
+        if 200 == r.status_code:
+            if Strings.VERSION == HTML(r.text).xpath('//div[@class="release-header"]/div/div/a/text()')[0]:
+                self.__signal.emit(self.NO_NEW_VERSION)
+            else:
+                self.__signal.emit(self.NEW_VERSION)
+        else:
+            self.__signal.emit(self.ERROR)
+
+    @property
+    def signal(self):
+        return self.__signal
+
+    CHECKING = 1
+    NEW_VERSION = 2
+    NO_NEW_VERSION = 3
+    ERROR = 5
 
 
 class SettingDialog(QDialog):
+    __check_new_version_signal = pyqtSignal()
     default_setting = {
         'TipState': '1',
         'StartupState': '1',
@@ -53,7 +93,7 @@ class SettingDialog(QDialog):
         'BrowserPath': '',
         'PrivateMode': '0',
         'Hotkey/keys': 'caps_lock',
-        'Hotkey/interval': '0.5',
+        'Hotkey/interval': '0.3',
         'Hotkey/repetitions': '2',
         'Ui/distance': '3',
         'Ui/opacity': '0.9',
@@ -84,6 +124,7 @@ class SettingDialog(QDialog):
                                 self._ui.pushButton_red, self._ui.pushButton_purple,
                                 self._ui.pushButton_grey, self._ui.pushButton_black]
         self.reload_ui()
+        self.__new_version_checker = NewVersionChecker()
         self.__connect_event_handlers()
         self.__key_setting_listener.start()
         if int(self._setting.value('StartupState')):
@@ -267,6 +308,16 @@ class SettingDialog(QDialog):
                 setting_map[name] = self._setting.value(name)
             dump(setting_map, open(filename, 'w'))
 
+    def _check_new_version(self, checked):
+        self._ui.pushButton_check_update.setEnabled(False)
+        self.__check_new_version_signal.emit()
+
+    def _show_new_version_result(self, state):
+        from Strings import Strings
+        self._ui.label_update_tip.setText(getattr(Strings, 'SETTING_CHECK_UPDATE_TIP{}'.format(state), ''))
+        if state != NewVersionChecker.CHECKING:
+            self._ui.pushButton_check_update.setEnabled(True)
+
     def __connect_event_handlers(self):
         self._ui.widget_up.mousePressEvent = self.__mouse_press_event
         self._ui.widget_up.mouseMoveEvent = self.__mouse_move_event
@@ -308,6 +359,10 @@ class SettingDialog(QDialog):
         self._ui.checkBox_no_sleep.clicked.connect(self._change_no_sleep_state)
         self._ui.pushButton_import_settings.clicked.connect(self.__import_settings)
         self._ui.pushButton_export_settings.clicked.connect(self.__export_settings)
+
+        self.__new_version_checker.signal.connect(self._show_new_version_result)
+        self.__check_new_version_signal.connect(self.__new_version_checker.check)
+        self._ui.pushButton_check_update.clicked.connect(self._check_new_version)
 
     def __on_key_release(self, key):
         key_name = getattr(key, 'name', None)
@@ -351,6 +406,9 @@ class SettingDialog(QDialog):
                 self._ui.frame_appearance.raise_()
             elif Strings.SETTING_ADVANCED == data:
                 self._ui.frame_advanced.raise_()
+            elif Strings.SETTING_ABOUT == data:
+                self._ui.frame_about.raise_()
+                self._ui.label_update_tip.clear()
 
     def _load_settings(self):
         self.__setting_changed_manually = False

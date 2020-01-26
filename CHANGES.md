@@ -1,3 +1,11 @@
+## v1.1.0
+#### Features
+- Add check update;
+- Add open source address and author message.
+#### Refactor
+- Optimize Strings module;
+- Adjust SuggestionGetter module.
+
 ## v1.0.0
 - The first stable version.
 

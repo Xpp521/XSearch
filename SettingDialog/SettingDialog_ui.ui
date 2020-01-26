@@ -36,7 +36,7 @@
       <x>0</x>
       <y>140</y>
       <width>260</width>
-      <height>400</height>
+      <height>450</height>
      </rect>
     </property>
     <property name="font">
@@ -112,6 +112,11 @@
     <item>
      <property name="text">
       <string>高级</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>关于</string>
      </property>
     </item>
    </widget>
@@ -1492,14 +1497,216 @@
      <string>_</string>
     </property>
    </widget>
+   <widget class="QFrame" name="frame_about">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>50</y>
+      <width>765</width>
+      <height>600</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="label_update">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>20</y>
+       <width>600</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>软件更新</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_cur_version_tip">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>60</y>
+       <width>140</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>当前版本：</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_open_source">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>132</y>
+       <width>600</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>开源地址</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_update_tip">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>90</y>
+       <width>500</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>正在检查新版本...</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_check_update">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>85</y>
+       <width>150</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="text">
+      <string>检查更新</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_open_source_tip">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>170</y>
+       <width>500</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>本软件代码已开源，欢迎Star~</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_open_source_address_tip">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>200</y>
+       <width>100</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>开源地址：</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_open_source_address">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>200</y>
+       <width>500</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>https://github.com/Xpp521/XSearch</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_author_data">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>244</y>
+       <width>600</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>作者信息</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_author_name_tip">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>280</y>
+       <width>50</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>名称：</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_email_tip">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>310</y>
+       <width>50</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>邮箱：</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_author_name">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>280</y>
+       <width>100</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Xpp521</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_email">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>310</y>
+       <width>500</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Xpp233@foxmail.com</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_cur_version">
+     <property name="geometry">
+      <rect>
+       <x>200</x>
+       <y>60</y>
+       <width>100</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>v1.0.1</string>
+     </property>
+    </widget>
+   </widget>
    <zorder>pushButton_close</zorder>
    <zorder>pushButton_minimize</zorder>
    <zorder>frame_advanced</zorder>
    <zorder>frame_appearance</zorder>
    <zorder>frame_basics</zorder>
-   <zorder>frame_search_other</zorder>
    <zorder>frame_hotkey</zorder>
+   <zorder>frame_search_other</zorder>
    <zorder>frame_engine_management</zorder>
+   <zorder>frame_about</zorder>
   </widget>
   <widget class="QWidget" name="widget_up" native="true">
    <property name="geometry">
