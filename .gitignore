@@ -10,4 +10,6 @@ gen
 Leaf.ico
 /Icons/ico
 /Icons/0
-/SettingWindow/SettingWindow_ui0.py
+/Icons/zimuku.png
+build/
+dist/

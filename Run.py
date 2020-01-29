@@ -14,8 +14,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-from sys import argv
 from main import XSearch
+from sys import argv, exit
 from PyQt5.QtWidgets import QApplication
 
 

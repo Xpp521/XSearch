@@ -17,7 +17,7 @@
 """
 The strings in the program. English version.
 """
-from ._info import *
+from info import *
 
 # Setting dialog start
 SETTING_DIALOG_TITLE = 'Setting'
