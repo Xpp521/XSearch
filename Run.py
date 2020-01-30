@@ -14,6 +14,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import INFO
 from main import XSearch
 from sys import argv, exit
 from PyQt5.QtWidgets import QApplication
@@ -21,8 +22,8 @@ from PyQt5.QtWidgets import QApplication
 
 if __name__ == '__main__':
     app = QApplication(argv)
-    app.setOrganizationName('Xpp')
-    app.setOrganizationDomain('Xpp.com')
-    app.setApplicationName('XSearch')
+    app.setOrganizationName(INFO.AUTHOR_NAME)
+    app.setOrganizationDomain('{}.com'.format(INFO.AUTHOR_NAME))
+    app.setApplicationName(INFO.APP_NAME)
     search = XSearch()
     exit(app.exec_())

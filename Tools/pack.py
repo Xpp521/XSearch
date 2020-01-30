@@ -14,13 +14,16 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""
+Packing tool.
+"""
 from sys import path
 from shutil import rmtree, move
 from os.path import join, dirname
 from os import walk, popen, listdir
 from zipfile import ZipFile, ZIP_DEFLATED
 path.append('../')
-import info
+import INFO
 
 
 # Current directory
@@ -52,7 +55,10 @@ def pack():
 
 def compress():
     """Compress the new version."""
-    directory = join(ROOT, 'dist', listdir(join(ROOT, 'dist'))[0])
+    try:
+        directory = join(ROOT, 'dist', listdir(join(ROOT, 'dist'))[0])
+    except IndexError:
+        return
     d = dirname(directory)
     print('Compressing...')
     with ZipFile('{}_Portable.zip'.format(directory), 'w') as zip_file:
@@ -62,11 +68,11 @@ def compress():
         zip_file.comment = '''{}_{}
 Author: {}
 Email: {}
-License: GNU General Public v3.0
-Open source address: {}'''.format(info.APP_NAME, info.VERSION,
-                                  info.AUTHOR_NAME, info.AUTHOR_EMAIL,
-                                  info.OPEN_SOURCE_ADDRESS).encode()
-    print('Compression completed')
+License: GPL v3.0
+Open source address: {}'''.format(INFO.APP_NAME, INFO.VERSION,
+                                  INFO.AUTHOR_NAME, INFO.AUTHOR_EMAIL,
+                                  INFO.OPEN_SOURCE_ADDRESS).encode()
+    print('Compression completed.')
 
 
 def main():
@@ -77,4 +83,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    input('Script end.')

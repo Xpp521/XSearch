@@ -50,5 +50,5 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         Dialog.setWindowIcon(QIcon(join('Icons', 'XSearch.ico')))
-        from Strings import Strings
+        from Languages import Strings
         Dialog.setWindowTitle(Strings.APP_NAME)

@@ -31,12 +31,13 @@ from PyQt5.QtCore import Qt, QPoint, QSettings, pyqtSignal
 class OperationType(IntEnum):
     OPEN = 1
     SEARCH = 2
+    COPY = 3
 
 
 class SearchDialog(QDialog):
     __get_suggestions_signal = pyqtSignal(str)
 
-    def __init__(self):
+    def __init__(self, work_thread=None):
         super().__init__()
         self.__regex_url = r'^(?=^.{3,255}$)(http(s)?:\/\/)?(www\.)?[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][' \
                            r'-a-zA-Z0-9]{0,62})+(:\d+)*(\/\w+\.\w+)*'
@@ -53,7 +54,7 @@ class SearchDialog(QDialog):
         self.__keywords = []
         self.__engine_icons = []
         self.__cur_engine = ''
-        self.__suggestion_getter = WebGetter()
+        self.__suggestion_getter = WebGetter(thread=work_thread)
         self.__suggestion_getter.signal.connect(self.__show_suggestions)
         self.__get_suggestions_signal.connect(self.__suggestion_getter.get)
         self.__model = ListModel(11)
@@ -302,3 +303,7 @@ class SearchDialog(QDialog):
     @property
     def suggestion_getter(self):
         return self.__suggestion_getter
+
+    @property
+    def work_thread(self):
+        return self.__suggestion_getter.thread

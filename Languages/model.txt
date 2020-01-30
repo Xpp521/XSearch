@@ -15,9 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-The strings in the program. English version.
+The strings in the program. Language: {language}.
 """
-from info import *
+from INFO import *
 
 # Setting dialog start
 SETTING_DIALOG_TITLE = ''
@@ -89,8 +89,7 @@ SETTING_CUR_VERSION = VERSION
 SETTING_CUR_VERSION_TIP = ''
 SETTING_CHECK_UPDATE = ''
 SETTING_CHECK_UPDATE_TIP1 = ''
-SETTING_CHECK_UPDATE_TIP2 = '<style>a{{color:black;}}</style>: ' \
-                            '<a href="{}"></a>'.format(RELEASE_ADDRESS)
+SETTING_CHECK_UPDATE_TIP2 = '<style>a{{color:black;}}</style>: <a href="{}"></a>'.format(RELEASE_ADDRESS)
 SETTING_CHECK_UPDATE_TIP3 = ''
 SETTING_CHECK_UPDATE_TIP5 = ''
 SETTING_OPEN_SOURCE = ''
@@ -103,12 +102,11 @@ SETTING_AUTHOR_NAME_TIP = ''
 SETTING_EMAIL = AUTHOR_EMAIL
 SETTING_EMAIL_TIP = ''
 
-SETTING_SIMPLIFIED_CHINESE = ''
-SETTING_ENGLISH = ''
 SETTING_BAIDU = ''
 SETTING_360 = ''
 SETTING_SOGOU = ''
 SETTING_DOGE = ''
+SETTING_GOOGLE = ''
 # Setting dialog end
 
 # Tray icon start

@@ -15,9 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-The strings in the program. English version.
+The strings in the program. Language: English.
 """
-from info import *
+from INFO import *
 
 # Setting dialog start
 SETTING_DIALOG_TITLE = 'Setting'
@@ -103,12 +103,11 @@ SETTING_AUTHOR_NAME_TIP = 'Name: '
 SETTING_EMAIL = AUTHOR_EMAIL
 SETTING_EMAIL_TIP = 'Email: '
 
-SETTING_SIMPLIFIED_CHINESE = 'Simplified Chinese'
-SETTING_ENGLISH = 'English'
 SETTING_BAIDU = 'Baidu'
 SETTING_360 = '360'
 SETTING_SOGOU = 'Sogou'
 SETTING_DOGE = 'DogeDoge'
+SETTING_GOOGLE = 'Google'
 # Setting dialog end
 
 # Tray icon start

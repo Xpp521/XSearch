@@ -15,9 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-The strings in the program. Chinese version.
+The strings in the program. Language: 简体中文.
 """
-from info import *
+from INFO import *
 
 # Setting dialog start
 SETTING_DIALOG_TITLE = '设置'
@@ -102,12 +102,11 @@ SETTING_AUTHOR_NAME_TIP = '名称：'
 SETTING_EMAIL = AUTHOR_EMAIL
 SETTING_EMAIL_TIP = '邮箱：'
 
-SETTING_SIMPLIFIED_CHINESE = '简体中文'
-SETTING_ENGLISH = '英语'
 SETTING_BAIDU = '百度'
 SETTING_360 = '360'
 SETTING_SOGOU = '搜狗'
 SETTING_DOGE = '多吉'
+SETTING_GOOGLE = '谷歌'
 # Setting dialog end
 
 # Tray icon start

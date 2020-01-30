@@ -28,19 +28,20 @@ from PyQt5.QtWidgets import QDialog, QFileDialog
 from requests.exceptions import RequestException
 from PyQt5.QtCore import Qt, QObject, QThread, pyqtSignal, QSettings
 
-_thread = QThread()
-_thread.start()
-
 
 class NewVersionChecker(QObject):
     __signal = pyqtSignal(int)
 
     def __init__(self, thread=None):
         super().__init__()
-        self.moveToThread(thread if isinstance(thread, QThread) else _thread)
+        self.__thread = thread
+        if not isinstance(thread, QThread):
+            self.__thread = QThread()
+            self.__thread.start()
+        self.moveToThread(self.__thread)
 
     def check(self, *args, **kwargs):
-        from Strings import Strings
+        from Languages import Strings
         self.__signal.emit(self.CHECKING)
         try:
             r = get(Strings.RELEASE_ADDRESS, timeout=11)
@@ -59,6 +60,10 @@ class NewVersionChecker(QObject):
     def signal(self):
         return self.__signal
 
+    @property
+    def thread(self):
+        return self.__thread
+
     CHECKING = 1
     NEW_VERSION = 2
     NO_NEW_VERSION = 3
@@ -70,8 +75,7 @@ class SettingDialog(QDialog):
     default_setting = {
         'TipState': '1',
         'StartupState': '1',
-        'Language/index': '0',
-        'Language/data': 'cn',
+        'Language': 'en',
         'SearchEngine/count': '9',
         'SearchEngine/engines/0': 'baidu||{}||https://www.baidu.com/s?ie=utf-8&wd=%s'.format(join('Icons',
                                                                                                   'baidu.png')),
@@ -107,7 +111,7 @@ class SettingDialog(QDialog):
         'NoSleepState': '0',
     }
 
-    def __init__(self):
+    def __init__(self, work_thread=None):
         super().__init__()
         self.__is_moving = False
         self.__mouse_pos = None
@@ -124,7 +128,7 @@ class SettingDialog(QDialog):
                                 self._ui.pushButton_red, self._ui.pushButton_purple,
                                 self._ui.pushButton_grey, self._ui.pushButton_black]
         self.reload_ui()
-        self.__new_version_checker = NewVersionChecker()
+        self.__new_version_checker = NewVersionChecker(work_thread)
         self.__connect_event_handlers()
         self.__key_setting_listener.start()
         if int(self._setting.value('StartupState')):
@@ -162,10 +166,10 @@ class SettingDialog(QDialog):
         self._setting.setValue('TipState', str(int(checked)))
 
     def _change_language(self, index):
-        self._setting.setValue('Language/index', str(index))
-        self._setting.setValue('Language/data', self._ui.comboBox_language.currentData())
-        modules.pop('Strings')
-        self.reload_ui(qss=False)
+        if self.__setting_changed_manually:
+            self._setting.setValue('Language', self._ui.comboBox_language.currentData())
+            modules.pop('Languages')
+            self.reload_ui(qss=False)
 
     def _change_engine_data(self, item):
         if self.__setting_changed_manually:
@@ -220,7 +224,7 @@ class SettingDialog(QDialog):
         pass
 
     def _change_browser_path(self):
-        from Strings import Strings
+        from Languages import Strings
         filename = QFileDialog.getOpenFileName(parent=self, caption=Strings.SETTING_CHOOSE_BROWSER,
                                                filter='*.exe;*.sh')[0]
         if filename:
@@ -232,7 +236,7 @@ class SettingDialog(QDialog):
         self._setting.setValue('PrivateMode', str(int(checked)))
 
     def __change_hotkey_type(self, checked):
-        from Strings import Strings
+        from Languages import Strings
         text = self.sender().text()
         if Strings.SETTING_SINGLE_KEY == text:
             self._ui.comboBox_repetitions.setEnabled(True)
@@ -288,7 +292,7 @@ class SettingDialog(QDialog):
         self._setting.setValue('NoSleepState', str(int(checked)))
 
     def __import_settings(self):
-        from Strings import Strings
+        from Languages import Strings
         filename = QFileDialog.getOpenFileName(parent=self, caption=Strings.SETTING_CHOOSE_IMPORT,
                                                filter='*.json')[0]
         if filename:
@@ -299,7 +303,7 @@ class SettingDialog(QDialog):
             self.reload_ui()
 
     def __export_settings(self):
-        from Strings import Strings
+        from Languages import Strings
         filename = QFileDialog.getSaveFileName(parent=self, caption=Strings.SETTING_CHOOSE_EXPORT,
                                                directory='XSearch_Setting.json', filter='*.json')[0]
         if filename:
@@ -313,7 +317,7 @@ class SettingDialog(QDialog):
         self.__check_new_version_signal.emit()
 
     def _show_new_version_result(self, state):
-        from Strings import Strings
+        from Languages import Strings
         self._ui.label_update_tip.setText(getattr(Strings, 'SETTING_CHECK_UPDATE_TIP{}'.format(state), ''))
         if state != NewVersionChecker.CHECKING:
             self._ui.pushButton_check_update.setEnabled(True)
@@ -392,7 +396,7 @@ class SettingDialog(QDialog):
                 item.setExpanded(True)
             self.__tree_item_clicked(item.child(0), column)
         else:
-            from Strings import Strings
+            from Languages import Strings
             data = item.data(0, Qt.DisplayRole)
             if Strings.SETTING_BASICS == data:
                 self._ui.frame_basics.raise_()
@@ -414,7 +418,8 @@ class SettingDialog(QDialog):
         self.__setting_changed_manually = False
         self._ui.checkBox_start_up.setChecked(int(self._setting.value('StartupState')))
         self._ui.checkBox_show_tip.setChecked(self._tip_state)
-        self._ui.comboBox_language.setCurrentIndex(int(self._setting.value('Language/index')))
+        from Languages import language_map
+        self._ui.comboBox_language.setCurrentText(language_map.get(self._setting.value('Language')))
         row = int(self._setting.value('SearchEngine/count'))
         self._ui.model.setRowCount(row + 1)
         for i in range(row):
@@ -654,3 +659,7 @@ class SettingDialog(QDialog):
         if Qt.Key_Escape == key:
             self._hide_dialog()
         event.ignore()
+
+    @property
+    def work_thread(self):
+        return self.__new_version_checker.thread

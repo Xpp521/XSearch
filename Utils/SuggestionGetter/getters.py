@@ -21,9 +21,6 @@ from requests import RequestException
 from requests.sessions import Session
 from PyQt5.QtCore import QObject, pyqtSignal
 
-_thread = QThread()
-_thread.start()
-
 
 class BaseGetter(QObject):
     __signal = pyqtSignal(list)
@@ -31,7 +28,11 @@ class BaseGetter(QObject):
     def __init__(self, thread=None):
         super().__init__()
         self.__cached_data = {'': []}
-        self.moveToThread(thread if isinstance(thread, QThread) else _thread)
+        self.__thread = thread
+        if not isinstance(thread, QThread):
+            self.__thread = QThread()
+            self.__thread.start()
+        self.moveToThread(self.__thread)
 
     def get(self, keyword):
         keyword = keyword.strip()
@@ -57,6 +58,10 @@ class BaseGetter(QObject):
     def signal(self):
         return self.__signal
 
+    @property
+    def thread(self):
+        return self.__thread
+
 
 class WebGetter(BaseGetter):
     def __init__(self, api=None, thread=None):
@@ -64,7 +69,8 @@ class WebGetter(BaseGetter):
         self.__api_map = {self.QH360: 'https://sug.so.360.cn/suggest/word?',
                           self.BAIDU: '',
                           self.SOGOU: '',
-                          self.DOGEDOGE: 'https://www.dogedoge.com/sugg/'}
+                          self.DOGEDOGE: 'https://www.dogedoge.com/sugg/',
+                          self.GOOGLE: 'http://suggestqueries.google.com/complete/search?'}
         self.api = api
         self._session = Session()
         self._session.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, ' \
@@ -91,7 +97,7 @@ class WebGetter(BaseGetter):
                   'word': text,
                   '_jsonp': 'suggest_so'}
         try:
-            r = self._session.get(self.__api_map.get(self.__api), params=params, timeout=3)
+            r = self._session.get(self.__api_map.get(self.__api), params=params, timeout=1)
         except RequestException:
             return []
         if 200 == r.status_code:
@@ -105,7 +111,7 @@ class WebGetter(BaseGetter):
     def __get_baidu_suggestions(self, text):
         params = {'wd': text}
         try:
-            r = self._session.get(self.__api_map.get(self.__api), params=params, timeout=3)
+            r = self._session.get(self.__api_map.get(self.__api), params=params, timeout=1)
         except RequestException:
             return []
         if 200 == r.status_code:
@@ -115,7 +121,7 @@ class WebGetter(BaseGetter):
     def __get_sogou_suggestions(self, text):
         params = {'key': text}
         try:
-            r = self._session.get(self.__api_map.get(self.__api), params=params, timeout=3)
+            r = self._session.get(self.__api_map.get(self.__api), params=params, timeout=1)
         except RequestException:
             return []
         if 200 == r.status_code:
@@ -124,7 +130,7 @@ class WebGetter(BaseGetter):
 
     def __get_dogedoge_suggestions(self, text):
         try:
-            r = self._session.get('{}{}'.format(self.__api_map.get(self.__api), text), timeout=3)
+            r = self._session.get('{}{}'.format(self.__api_map.get(self.__api), text), timeout=1)
         except RequestException:
             return []
         if 200 == r.status_code:
@@ -132,13 +138,13 @@ class WebGetter(BaseGetter):
         return []
 
     def __get_google_suggestions(self, text):
-        params = {'key': text}
+        params = {'client': 'firefox', 'q': text}
         try:
-            r = self._session.get(self.__api_map.get(self.__api), params=params, timeout=3)
+            r = self._session.get(self.__api_map.get(self.__api), params=params, timeout=1)
         except RequestException:
             return []
         if 200 == r.status_code:
-            return []
+            return r.json()[1]
         return []
 
     @property
@@ -158,14 +164,6 @@ class WebGetter(BaseGetter):
 
 #       Extra features
 # ↓↓↓ Waiting to be done ↓↓↓
-class LocalFileGetter(BaseGetter):
-    def __init__(self, thread=None):
-        super().__init__(thread)
-
-    def _custom_get(self, text):
-        pass
-
-
 class TranslationGetter(BaseGetter):
     def __init__(self, thread=None):
         super().__init__(thread)

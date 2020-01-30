@@ -27,7 +27,7 @@ Usage:
             getter = WebGetter()
 
             # switch suggestion provider
-            getter.api = SuggestionProvider.DOGEDOGE
+            getter.api = WebGetter.GOOGLE
 
             # bind the signal to be emitted
             self.suggestion_signal.connect(getter.get)

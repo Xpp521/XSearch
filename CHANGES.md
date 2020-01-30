@@ -1,3 +1,12 @@
+## v1.2.0
+#### Features
+- Add a new suggestion provider: Google;
+- Add language management tool.
+#### Refactor
+- Restructure and rename "Strings" module to "Language";
+- SuggestionGetter and NewVersionChecker now share the same background thread;
+- Rewrite README.md and add a Chinese version.
+
 ## v1.1.0
 #### Features
 - Add check update;

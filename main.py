@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from TrayIcon import TrayIcon
+from PyQt5.QtCore import QThread
 from PyHotKey import manager, Key
 from SearchDialog import SearchDialog
 from SettingDialog import SettingDialog
@@ -23,9 +24,11 @@ from PyQt5.QtWidgets import QApplication
 
 class XSearch(SettingDialog):
     def __init__(self):
-        super().__init__()
+        self.__work_thread = QThread()
+        self.__work_thread.start()
+        super().__init__(self.__work_thread)
         self.__setting_changed = False
-        search_dialog = SearchDialog()
+        search_dialog = SearchDialog(self.__work_thread)
         tray_icon = TrayIcon()
         if not all((tray_icon.setActionHandler('search', self.__show_search_dialog),
                     tray_icon.setActionHandler('setting', self.__show_setting_dialog),
@@ -36,7 +39,7 @@ class XSearch(SettingDialog):
         self.__hot_key_id = -1
         self.__update_hot_key()
         tray_icon.show()
-        from Strings import Strings
+        from Languages import Strings
         self.__show_tip(Strings.TIP_WELCOME)
 
     def __update_hot_key(self):
@@ -68,7 +71,7 @@ class XSearch(SettingDialog):
 
     def __show_tip(self, msg):
         if self._tip_state:
-            from Strings import Strings
+            from Languages import Strings
             if isinstance(msg, str):
                 self.__widgets.get('tray_icon').showMessage(Strings.APP_NAME, msg)
 
@@ -85,7 +88,7 @@ class XSearch(SettingDialog):
         self._ui.pushButton_suggestion_clear_cache.setEnabled(cache_count)
 
     def _change_tip_state(self, checked):
-        from Strings import Strings
+        from Languages import Strings
         super()._change_tip_state(checked)
         if checked:
             self.__show_tip(Strings.TIP_TURN_ON_TIP)
@@ -97,7 +100,7 @@ class XSearch(SettingDialog):
 
     def _change_no_sleep_state(self, checked):
         super()._change_no_sleep_state(checked)
-        from Strings import Strings
+        from Languages import Strings
         if checked:
             self.__show_tip(Strings.TIP_PREVENT_SLEEP)
         else:
@@ -114,3 +117,7 @@ class XSearch(SettingDialog):
         super()._hide_dialog()
         self.__update_hot_key()
         self.__setting_changed = True
+
+    @property
+    def work_thread(self):
+        return self.__work_thread

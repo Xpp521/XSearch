@@ -10,23 +10,29 @@ ROOT = dirname(getcwd())
 
 INFO = {}
 # Load application info
-with open(join(ROOT, 'info.py')) as f:
+with open(join(ROOT, 'INFO.py')) as f:
     for line in f.readlines():
         if '=' in line:
             info = line.strip().replace(' ', '').split('=')
             INFO[info[0]] = info[1][1:-1]
 
-paths = [ROOT,
-         join(ROOT, 'SearchDialog'),
-         join(ROOT, 'SettingDialog'),
-         join(ROOT, 'Strings'),
-         join(ROOT, 'Utils')]
+paths = [
+    ROOT,
+    join(ROOT, 'SearchDialog'),
+    join(ROOT, 'SettingDialog'),
+    join(ROOT, 'Strings'),
+    join(ROOT, 'Utils')
+]
 
-added_files = [(join(ROOT, 'Icons'), 'Icons'),
-               (join(ROOT, 'CHANGES.md'), '.'),
-               (join(ROOT, 'CreateStartup.vbs'), '.'),
-               (join(ROOT, 'LICENSE.md'), '.'),
-               (join(ROOT, 'README.md'), '.')]
+added_files = [
+    (join(ROOT, 'Icons'), 'Icons'),
+    (join(ROOT, 'CHANGES.md'), '.'),
+    (join(ROOT, 'CreateStartup.vbs'), '.'),
+    (join(ROOT, 'LICENSE.md'), '.'),
+    (join(ROOT, 'README.md'), '.',),
+    (join(ROOT, 'README_cn.md'), '.',),
+    (join(ROOT, 'Languages', 'map.json'), 'Languages')
+]
 
 a = Analysis([join(ROOT, 'Run.py')],
              pathex=paths,
