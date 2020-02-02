@@ -14,9 +14,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-VERSION = 'v1.2.0'
+from os.path import join, dirname
+VERSION = 'v1.2.1'
 AUTHOR_NAME = 'Xpp'
 APP_NAME = 'XSearch'
 AUTHOR_EMAIL = 'Xpp233@foxmail.com'
+APP_ICON_PATH = join(dirname(__file__), 'Icons', 'app.ico')
 OPEN_SOURCE_ADDRESS = 'https://github.com/Xpp521/XSearch'
 RELEASE_ADDRESS = 'https://github.com/Xpp521/XSearch/releases'

@@ -102,7 +102,7 @@ Usage:
 \tex: lang del en
 
 
-\t3. lang add {code} {name}:\tAdd a new language.
+\t3. lang add {code} {name}:\tAdd new language.
 \tex: lang add en English
 
 

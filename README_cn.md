@@ -5,13 +5,14 @@ XSearch可以让你更加快速、方便地完成网络搜索或者访问指定�
 ጿ ኈ ቼ ዽ    ጿ ኈ ቼ ዽ    ጿ ኈ ቼ ዽ 
 ___
 ### 依赖
+- lxml
 - PyQt5
 - pynput
 - requests
 - PyHotKey
 ___
 ### 使用方法
-双击大写锁定，开始你的表演。
+双击大写锁定，然后开始你的表演。
 ___
 ### 截图
 #### 搜索框
@@ -21,11 +22,12 @@ ___
 ![Setting dialog](https://raw.githubusercontent.com/Xpp521/Images/master/XSearch0.png)
 ___
 ### 许可证
-[GPLv3.0](https://github.com/Xpp521/XSearch/blob/master/LICENSE.md "License")
+[GPLv3.0](https://github.com/Xpp521/XSearch/blob/master/LICENSE.md "License")  
+这是一个自由软件，欢迎感兴趣的小伙伴贡献代码 : )
 ___
 ### 计划清单
 下面是一些计划添加的功能，敬请期待。。。
-- 计算
 - 翻译
+- 计算
 - 自定义主题
 - 划词搜索

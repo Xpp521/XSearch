@@ -21,7 +21,7 @@ from PyQt5.QtWidgets import QAction, QMenu
 
 class SingleLevelMenu(QMenu):
     """An untitled translucent single level menu.
-    SingleLevelMenu(actionLabels: list, icons: list=None, parent: QWidget = None)
+    SingleLevelMenu(actionLabels: list, icons: list = None, parent: QWidget = None)
     """
     def __init__(self, actionLabels, icons=None, parent=None):
         super().__init__(parent)
@@ -47,7 +47,7 @@ class SingleLevelMenu(QMenu):
 
     def setActionHandler(self, actionName, handler, *args, **kwargs):
         """
-        Set handler for each action.
+        Set handler function for action.
         :rtype: bool.
         """
         action = self.actions.get(actionName)

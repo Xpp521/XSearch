@@ -5,13 +5,14 @@ This tool can let you complete the network search or reach the designated websit
 ጿ ኈ ቼ ዽ    ጿ ኈ ቼ ዽ    ጿ ኈ ቼ ዽ 
 
 ### Requirement
+- lxml
 - PyQt5
 - pynput
 - requests
 - PyHotKey
 
 ### Usage
-Double click "Caps lock", start your search journey.
+Double click "Caps lock", then start your search journey.
 
 ### Screenshot
 #### Search Dialog
@@ -21,7 +22,8 @@ Double click "Caps lock", start your search journey.
 ![Setting dialog](https://raw.githubusercontent.com/Xpp521/Images/master/XSearch0.png)
 
 ### License
-[GPLv3.0](https://github.com/Xpp521/XSearch/blob/master/LICENSE.md "License")
+[GPLv3.0](https://github.com/Xpp521/XSearch/blob/master/LICENSE.md "License")  
+This is a free software, welcome interested developers to share their code :)
 
 ### ToDo List
 These are some features I am considering for future development in XSearch.

@@ -20,35 +20,35 @@
 # Created by: PyQt5 UI code generator 5.11.3
 #
 # WARNING! All changes made in this file will be lost!
-from os.path import join
 from PyQt5.QtGui import QIcon
-from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtCore import Qt, QRect
+from PyQt5.QtWidgets import QLabel, QWidget, QLineEdit, QListView
 
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(690, 50)
-        Dialog.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-        Dialog.setAttribute(QtCore.Qt.WA_TranslucentBackground)
-        self.lineEdit = QtWidgets.QLineEdit(Dialog)
-        self.lineEdit.setGeometry(QtCore.QRect(0, 0, 690, 50))
+        Dialog.setWindowFlags(Qt.FramelessWindowHint)
+        Dialog.setAttribute(Qt.WA_TranslucentBackground)
+        self.lineEdit = QLineEdit(Dialog)
+        self.lineEdit.setGeometry(QRect(0, 0, 690, 50))
         self.lineEdit.setObjectName("lineEdit")
-        self.label = QtWidgets.QLabel(Dialog)
-        self.label.setGeometry(QtCore.QRect(11, 15, 20, 20))
+        self.label = QLabel(Dialog)
+        self.label.setGeometry(QRect(11, 15, 20, 20))
         self.label.setObjectName("label")
-        self.widget = QtWidgets.QWidget(Dialog, QtCore.Qt.ToolTip | QtCore.Qt.FramelessWindowHint)
-        self.widget.setGeometry(QtCore.QRect(0, 0, 690, 0))
+        self.widget = QWidget(Dialog, Qt.ToolTip | Qt.FramelessWindowHint)
+        self.widget.setGeometry(QRect(0, 0, 690, 0))
         self.widget.setObjectName("widget")
-        self.widget.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        self.widget.setAttribute(Qt.WA_TranslucentBackground)
         self.widget.setVisible(False)
-        self.listView = QtWidgets.QListView(self.widget)
-        self.listView.setGeometry(QtCore.QRect(0, 0, 690, 0))
+        self.listView = QListView(self.widget)
+        self.listView.setGeometry(QRect(0, 0, 690, 0))
         self.listView.setObjectName("listView")
-        self.listView.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
+        self.listView.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        # QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
-        Dialog.setWindowIcon(QIcon(join('Icons', 'XSearch.ico')))
         from Languages import Strings
         Dialog.setWindowTitle(Strings.APP_NAME)
+        Dialog.setWindowIcon(QIcon(Strings.APP_ICON_PATH))

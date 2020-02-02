@@ -23,7 +23,7 @@ from sys import modules, platform
 from pynput.keyboard import Listener
 from Utils.NoSleepWorker import Worker
 from .SettingDialog_ui import Ui_Dialog
-from Utils.SuggestionGetter import WebGetter
+from Utils.SuggestionGetter import KeywordGetter
 from PyQt5.QtWidgets import QDialog, QFileDialog
 from requests.exceptions import RequestException
 from PyQt5.QtCore import Qt, QObject, QThread, pyqtSignal, QSettings
@@ -40,6 +40,31 @@ class NewVersionChecker(QObject):
             self.__thread.start()
         self.moveToThread(self.__thread)
 
+    @staticmethod
+    def __compare_version(old, new):
+        """Compare old version and new version.
+        Version text format example: v1.2.3
+        :param old: old version text.
+        :param new: new version text.
+        :return: returns True if new > old, otherwise returns False.
+        """
+        try:
+            old_version = [int(v) for v in old.strip().replace('r', '').split('.')]
+            new_version = [int(v) for v in new.strip().replace('r', '').split('.')]
+        except ValueError:
+            return False
+        if 3 != len(old_version) or 3 != len(new_version):
+            return False
+        if old_version[0] < new_version[0]:
+            return True
+        else:
+            if old_version[1] < new_version[1]:
+                return True
+            else:
+                if old_version[2] < new_version[2]:
+                    return True
+        return False
+
     def check(self, *args, **kwargs):
         from Languages import Strings
         self.__signal.emit(self.CHECKING)
@@ -49,10 +74,11 @@ class NewVersionChecker(QObject):
             self.__signal.emit(self.ERROR)
             return
         if 200 == r.status_code:
-            if Strings.VERSION == HTML(r.text).xpath('//div[@class="release-header"]/div/div/a/text()')[0]:
-                self.__signal.emit(self.NO_NEW_VERSION)
-            else:
+            if self.__compare_version(Strings.VERSION,
+                                      HTML(r.text).xpath('//div[@class="release-header"]/div/div/a/text()')[0]):
                 self.__signal.emit(self.NEW_VERSION)
+            else:
+                self.__signal.emit(self.NO_NEW_VERSION)
         else:
             self.__signal.emit(self.ERROR)
 
@@ -93,7 +119,7 @@ class SettingDialog(QDialog):
         'SearchEngine/default_engine_index': '0',
         'SuggestionState': '1',
         'SuggestionProvider/index': '0',
-        'SuggestionProvider/data': str(WebGetter.QH360),
+        'SuggestionProvider/data': str(KeywordGetter.QH360),
         'BrowserPath': '',
         'PrivateMode': '0',
         'Hotkey/keys': 'caps_lock',
@@ -275,7 +301,7 @@ class SettingDialog(QDialog):
         self.reload_ui(text=False)
 
     def _custom_theme(self):
-        pass
+        """Custom theme. Waiting to be done."""
 
     def _change_opacity(self, index):
         self._setting.setValue('Ui/opacity', self._ui.comboBox_opacity.currentText())

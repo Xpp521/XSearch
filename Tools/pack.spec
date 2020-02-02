@@ -58,15 +58,15 @@ exe = EXE(pyz,
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
-          upx=True,
+          upx=False,
           console=False,
-          icon=join(ROOT, 'Icons', 'XSearch.ico'))
+          icon=join(ROOT, 'Icons', 'app.ico'))
 
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
                a.datas,
                strip=False,
-               upx=True,
+               upx=False,
                upx_exclude=[],
                name='{}_{}'.format(INFO.get('APP_NAME'), INFO.get('VERSION')))

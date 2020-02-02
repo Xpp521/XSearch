@@ -37,9 +37,9 @@ class TrayIcon(QSystemTrayIcon):
 
     def reload_ui(self, text=True, qss=True):
         if text:
-            self.setIcon(QIcon(join('Icons', 'XSearch.ico')))
             from Languages import Strings
             self.setToolTip(Strings.APP_NAME)
+            self.setIcon(QIcon(Strings.APP_ICON_PATH))
             self.actions.get('search').setText(Strings.TRAY_SEARCH)
             self.actions.get('setting').setText(Strings.TRAY_SETTING)
             self.actions.get('exit').setText(Strings.TRAY_EXIT)

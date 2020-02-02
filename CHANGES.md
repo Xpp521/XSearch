@@ -1,11 +1,19 @@
+## v1.2.1
+#### Bug Fixes
+- Fix suggestion list appears delay just after switching suggestion providers.
+
+#### Refactor
+- Optimize new version check logic.
+- Restructure SuggestionGetter module. 
+
 ## v1.2.0
 #### Features
 - Add a new suggestion provider: Google;
 - Add language management tool.
 #### Refactor
-- Restructure and rename "Strings" module to "Language";
+- Restructure and rename "Strings" module to "Languages";
 - SuggestionGetter and NewVersionChecker now share the same background thread;
-- Rewrite README.md and add a Chinese version.
+- Rewrite README.md and add Chinese version.
 
 ## v1.1.0
 #### Features

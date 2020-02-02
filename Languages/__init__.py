@@ -25,13 +25,12 @@ Usage:
 
 
     class MyDialog(QDialog)
-
         def __init__(self)
             super().__init__()
             self.translate_ui()
 
         def translate_ui(self):
-            # Module must be imported inside your method
+            # Module importation must be inside your method
             from Languages import Strings
 
             # Translate ui with strings in the module
@@ -44,13 +43,13 @@ Usage:
             print(language_map)
 
         def switch_language(self, lang):
-            # Set new language
-            QSetting().setValue('Language', lang)
+            # Change language setting
+            QSettings().setValue('Language', lang)
 
-            # Pop "Language" module
+            # Pop "Languages" module
             modules.pop('Languages')
 
-            # Re translation ui
+            # Re-translate ui
             self.translate_ui()
 """
 from json import load

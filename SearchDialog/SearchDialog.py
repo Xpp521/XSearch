@@ -23,7 +23,7 @@ from urllib.parse import quote
 from Utils.GUI import ListModel
 from PyQt5.QtGui import QPixmap
 from .SearchDialog_ui import Ui_Dialog
-from Utils.SuggestionGetter import WebGetter
+from Utils.SuggestionGetter import KeywordGetter
 from PyQt5.QtWidgets import QDialog, QApplication
 from PyQt5.QtCore import Qt, QPoint, QSettings, pyqtSignal
 
@@ -54,7 +54,7 @@ class SearchDialog(QDialog):
         self.__keywords = []
         self.__engine_icons = []
         self.__cur_engine = ''
-        self.__suggestion_getter = WebGetter(thread=work_thread)
+        self.__suggestion_getter = KeywordGetter(thread=work_thread)
         self.__suggestion_getter.signal.connect(self.__show_suggestions)
         self.__get_suggestions_signal.connect(self.__suggestion_getter.get)
         self.__model = ListModel(11)
@@ -83,7 +83,7 @@ class SearchDialog(QDialog):
             self.__keywords.append(engine_data[0])
             self.__engine_icons.append(engine_data[1])
         self.__default_engine_index = int(self.__setting.value('SearchEngine/default_engine_index'))
-        self.__suggestion_getter.api = int(self.__setting.value('SuggestionProvider/data'))
+        self.__suggestion_getter.provider = int(self.__setting.value('SuggestionProvider/data'))
         opacity = float(self.__setting.value('Ui/opacity'))
         self.setWindowOpacity(opacity)
         self.__ui.widget.setWindowOpacity(opacity)

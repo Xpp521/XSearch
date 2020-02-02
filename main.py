@@ -22,7 +22,7 @@ from SettingDialog import SettingDialog
 from PyQt5.QtWidgets import QApplication
 
 
-class XSearch(SettingDialog):
+class Application(SettingDialog):
     def __init__(self):
         self.__work_thread = QThread()
         self.__work_thread.start()

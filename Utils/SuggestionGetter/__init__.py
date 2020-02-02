@@ -17,32 +17,34 @@
 """
 Usage:
     from PyQt5.QtCore import pyqtSignal
-    from SuggestionGetter import WebGetter
+    from SuggestionGetter import KeywordGetter
 
 
     class A:
-        suggestion_signal = pyqtSignal(str)
+        signal = pyqtSignal(str)
 
         def __init__(self):
-            getter = WebGetter()
+            self.getter = KeywordGetter()
 
-            # switch suggestion provider
-            getter.api = WebGetter.GOOGLE
+            # Bind the signal to be emitted
+            self.signal.connect(self.getter.get)
 
-            # bind the signal to be emitted
-            self.suggestion_signal.connect(getter.get)
-
-            # bind callback function
-            getter.signal.connect(self.__show_suggestions)
+            # Bind callback function
+            self.getter.signal.connect(lambda li: print(li))
 
         def get_suggestions(keyword):
-            self.suggestion_signal.emit(keyword)
-
-        def __show_suggestions(suggestions):
-            print(suggestions)
+            self.signal.emit(keyword)
 
 
     a = A()
-    a.get_suggestions('keyword')
+
+    # Query keyword suggestions
+    a.get_suggestions('China')
+
+    # Clear suggestion cache
+    a.getter.clear_cache()
+
+    # Switch suggestion provider
+    a.getter.provider = KeywordGetter.GOOGLE
 """
-from .getters import WebGetter
+from .getters import KeywordGetter

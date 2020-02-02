@@ -14,8 +14,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+from time import time
 from re import findall
 from json import loads
+from hashlib import md5
+from random import random
 from PyQt5.QtCore import QThread
 from requests import RequestException
 from requests.sessions import Session
@@ -64,40 +67,79 @@ class BaseGetter(QObject):
 
 
 class WebGetter(BaseGetter):
-    def __init__(self, api=None, thread=None):
+    @property
+    def _provider_map(self):
+        raise NotImplementedError
+
+    def __init__(self, provider=None, timeout=None, thread=None):
         super().__init__(thread)
-        self.__api_map = {self.QH360: 'https://sug.so.360.cn/suggest/word?',
-                          self.BAIDU: '',
-                          self.SOGOU: '',
-                          self.DOGEDOGE: 'https://www.dogedoge.com/sugg/',
-                          self.GOOGLE: 'http://suggestqueries.google.com/complete/search?'}
-        self.api = api
         self._session = Session()
-        self._session.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, ' \
+        self._session.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, ' \
                                               'like Gecko) Chrome/65.0.3325.162 Safari/537.36'
+        self.timeout = timeout
+        self.provider = provider
+
+    def _custom_get(self, text):
+        raise NotImplementedError
+
+    @property
+    def provider(self):
+        return self._provider
+
+    @provider.setter
+    def provider(self, p):
+        self._provider = p if self._provider_map.get(p) else list(self._provider_map.keys())[0]
+        self._api = self._provider_map.get(self._provider)
+
+    @property
+    def timeout(self):
+        return self._timeout
+
+    @timeout.setter
+    def timeout(self, t):
+        self._timeout = t if isinstance(t, (float, int)) and 1 < t < 5 else 3
+
+
+class KeywordGetter(WebGetter):
+    QH360 = 0
+    BAIDU = 1
+    SOGOU = 2
+    DOGEDOGE = 3
+    GOOGLE = 5
+
+    @property
+    def _provider_map(self):
+        return {self.QH360: 'https://sug.so.360.cn/suggest/word?',
+                self.BAIDU: '',
+                self.SOGOU: '',
+                self.DOGEDOGE: 'https://www.dogedoge.com/sugg/',
+                self.GOOGLE: 'http://suggestqueries.google.com/complete/search?'}
+
+    def __init__(self, provider=None, timeout=None, thread=None):
+        super().__init__(provider, timeout, thread)
 
     def _custom_get(self, text):
         li = []
-        if self.QH360 == self.__api:
-            li = self.__get_360_suggestions(text)
-        elif self.BAIDU == self.__api:
-            li = self.__get_baidu_suggestions(text)
-        elif self.SOGOU == self.__api:
-            li = self.__get_sogou_suggestions(text)
-        elif self.DOGEDOGE == self.__api:
-            li = self.__get_dogedoge_suggestions(text)
-        elif self.GOOGLE == self.__api:
-            li = self.__get_google_suggestions(text)
+        if self.QH360 == self._provider:
+            li = self.__get_360(text)
+        elif self.BAIDU == self._provider:
+            li = self.__get_baidu(text)
+        elif self.SOGOU == self._provider:
+            li = self.__get_sogou(text)
+        elif self.DOGEDOGE == self._provider:
+            li = self.__get_dogedoge(text)
+        elif self.GOOGLE == self._provider:
+            li = self.__get_google(text)
         return li
 
-    def __get_360_suggestions(self, text):
+    def __get_360(self, text):
         params = {'callback': 'suggest_so',
                   'encodein': 'utf-8',
                   'encodeout': 'utf-8',
                   'word': text,
                   '_jsonp': 'suggest_so'}
         try:
-            r = self._session.get(self.__api_map.get(self.__api), params=params, timeout=1)
+            r = self._session.get(self._api, params=params, timeout=self._timeout)
         except RequestException:
             return []
         if 200 == r.status_code:
@@ -108,39 +150,39 @@ class WebGetter(BaseGetter):
                 return loads(text[text.find('['): text.rfind(']') + 1])
         return []
 
-    def __get_baidu_suggestions(self, text):
+    def __get_baidu(self, text):
         params = {'wd': text}
         try:
-            r = self._session.get(self.__api_map.get(self.__api), params=params, timeout=1)
+            r = self._session.get(self._api, params=params, timeout=self._timeout)
         except RequestException:
             return []
         if 200 == r.status_code:
             return []
         return []
 
-    def __get_sogou_suggestions(self, text):
+    def __get_sogou(self, text):
         params = {'key': text}
         try:
-            r = self._session.get(self.__api_map.get(self.__api), params=params, timeout=1)
+            r = self._session.get(self._api, params=params, timeout=self._timeout)
         except RequestException:
             return []
         if 200 == r.status_code:
             return []
         return []
 
-    def __get_dogedoge_suggestions(self, text):
+    def __get_dogedoge(self, text):
         try:
-            r = self._session.get('{}{}'.format(self.__api_map.get(self.__api), text), timeout=1)
+            r = self._session.get('{}{}'.format(self._api, text), timeout=self._timeout)
         except RequestException:
             return []
         if 200 == r.status_code:
             return [s.replace('</span>', '') for s in findall(r't-normal">(.*?)</d', r.text)]
         return []
 
-    def __get_google_suggestions(self, text):
+    def __get_google(self, text):
         params = {'client': 'firefox', 'q': text}
         try:
-            r = self._session.get(self.__api_map.get(self.__api), params=params, timeout=1)
+            r = self._session.get(self._api, params=params, timeout=self._timeout)
         except RequestException:
             return []
         if 200 == r.status_code:
@@ -148,28 +190,104 @@ class WebGetter(BaseGetter):
         return []
 
     @property
-    def api(self):
-        return self.__api
+    def provider(self):
+        return self._provider
 
-    @api.setter
-    def api(self, api_name):
-        self.__api = api_name if self.__api_map.get(api_name) else self.QH360
-
-    QH360 = 0
-    BAIDU = 1
-    SOGOU = 2
-    DOGEDOGE = 3
-    GOOGLE = 5
+    @provider.setter
+    def provider(self, p):
+        self._provider = p if self._provider_map.get(p) else list(self._provider_map.keys())[0]
+        self._api = self._provider_map.get(self._provider)
+        self._custom_get('')
 
 
 #       Extra features
 # ↓↓↓ Waiting to be done ↓↓↓
-class TranslationGetter(BaseGetter):
-    def __init__(self, thread=None):
-        super().__init__(thread)
+class TranslationGetter(WebGetter):
+    YOUDAO = 0
+    BAIDU = 1
+    GOOGLE = 2
+
+    @property
+    def _provider_map(self):
+        return {self.YOUDAO: 'http://fanyi.youdao.com/translate_o',
+                self.BAIDU: 'https://fanyi.baidu.com/v2transapi',
+                self.GOOGLE: ''}
+
+    def __init__(self, provider=None, timeout=None, thread=None):
+        super().__init__(provider, timeout, thread)
+        self.__source = None
+        self.__target = None
 
     def _custom_get(self, text):
-        pass
+        li = []
+        if self.YOUDAO == self._provider:
+            li = self.__get_youdao(text)
+        elif self.BAIDU == self._provider:
+            li = self.__get_baidu(text)
+        elif self.GOOGLE == self._provider:
+            li = self.__get_google(text)
+        return li
+
+    def __get_youdao(self, text):
+        # Algorithm source：http://shared.ydstatic.com/fanyi/newweb/v1.0.20/scripts/newweb/fanyi.min.js
+        t = md5(self._session.headers.get('User-Agent').encode()).hexdigest()
+        r = str(int(time() * 1000))
+        i = '{}{}'.format(r, int(10 * random()))
+        self._data['i'] = text
+        self._data['salt'] = i
+        self._data['sign'] = md5('fanyideskweb{}{}n%A-rKaT5fb[Gy?;N5@Tj'.format(text, i).encode()).hexdigest()
+        self._data['ts'] = r
+        self._data['bv'] = t
+        try:
+            r = self._session.post(self._api, data=self._data, timeout=self._timeout)
+        except Exception:
+            return []
+        if 200 == r.status_code:
+            json = r.json()
+            if 0 == json.get('errorCode'):
+                return [json.get('translateResult')[0][0].get('tgt')]
+        return []
+
+    def __get_baidu(self, text):
+        return []
+
+    def __get_google(self, text):
+        return []
+
+    @property
+    def provider(self):
+        return self._provider
+
+    @provider.setter
+    def provider(self, p):
+        self._provider = p if self._provider_map.get(p) else list(self._provider_map.keys())[0]
+        self._api = self._provider_map.get(self._provider)
+        if self.YOUDAO == self._provider:
+            self._data = {'smartresult': 'dict', 'client': 'fanyideskweb', 'doctype': 'json', 'version': '2.1',
+                          'keyfrom': 'fanyi.web', 'action': 'FY_BY_REALTlME',
+                          'from': self.__source, 'to': self.__target}
+            self._session.headers['Referer'] = 'http://fanyi.youdao.com/'
+        elif self.BAIDU == self._provider:
+            self._data = {}
+        elif self.GOOGLE == self._provider:
+            self._data = {}
+        self._custom_get('')
+
+    @property
+    def source(self):
+        return self.__source
+
+    @source.setter
+    def source(self, s):
+        self.__source = s
+
+    @property
+    def target(self):
+        return self.__target
+
+    @target.setter
+    def target(self, t):
+        self.__target = t
 
 
 class CalculationGetter(BaseGetter):
