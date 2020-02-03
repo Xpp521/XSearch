@@ -14,11 +14,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-from os.path import join
+from re import search
 from requests import get
 from json import load, dump
-from lxml.etree import HTML
 from PyQt5.QtGui import QIcon
+from Resources import resource
 from sys import modules, platform
 from pynput.keyboard import Listener
 from Utils.NoSleepWorker import Worker
@@ -42,15 +42,14 @@ class NewVersionChecker(QObject):
 
     @staticmethod
     def __compare_version(old, new):
-        """Compare old version and new version.
-        Version text format example: v1.2.3
+        """Compare old version and new version, version style: GNU.
         :param old: old version text.
         :param new: new version text.
         :return: returns True if new > old, otherwise returns False.
         """
         try:
-            old_version = [int(v) for v in old.strip().replace('r', '').split('.')]
-            new_version = [int(v) for v in new.strip().replace('r', '').split('.')]
+            old_version = [int(v) for v in old.strip().replace('v', '').split('.')]
+            new_version = [int(v) for v in new.strip().replace('v', '').split('.')]
         except ValueError:
             return False
         if 3 != len(old_version) or 3 != len(new_version):
@@ -74,8 +73,7 @@ class NewVersionChecker(QObject):
             self.__signal.emit(self.ERROR)
             return
         if 200 == r.status_code:
-            if self.__compare_version(Strings.VERSION,
-                                      HTML(r.text).xpath('//div[@class="release-header"]/div/div/a/text()')[0]):
+            if self.__compare_version(Strings.VERSION, search(r'releases/tag/(.*?)"', r.text).groups()[0]):
                 self.__signal.emit(self.NEW_VERSION)
             else:
                 self.__signal.emit(self.NO_NEW_VERSION)
@@ -103,19 +101,21 @@ class SettingDialog(QDialog):
         'StartupState': '1',
         'Language': 'en',
         'SearchEngine/count': '9',
-        'SearchEngine/engines/0': 'baidu||{}||https://www.baidu.com/s?ie=utf-8&wd=%s'.format(join('Icons',
-                                                                                                  'baidu.png')),
-        'SearchEngine/engines/1': 'google||{}||https://www.google.com/search?q=%s'.format(join('Icons', 'google.png')),
-        'SearchEngine/engines/2': 'bing||{}||http://www.bing.com/search?q=%s'.format(join('Icons', 'bing.png')),
-        'SearchEngine/engines/3': 'cnbing||{}||http://cn.bing.com/search?q=%s'.format(join('Icons', 'bing.png')),
-        'SearchEngine/engines/4': '360||{}||https://www.so.com/s?ie=utf-8&q=%s'.format(join('Icons', '360.png')),
-        'SearchEngine/engines/5': 'sogou||{}||https://www.sogou.com/web?ie=utf8&query=%s'.format(join('Icons',
-                                                                                                      'sogou.png')),
-        'SearchEngine/engines/6': 'toutiao||{}||https://m.toutiao.com/search/?&keyword=%s'.format(join('Icons',
-                                                                                                       'toutiao.png')),
-        'SearchEngine/engines/7': 'yandex||{}||https://yandex.com/search/?text=%s'.format(join('Icons', 'yandex.png')),
+        'SearchEngine/engines/0': 'baidu||{}||https://www.baidu.com/s?ie=utf-8&wd=%s'.format(
+            resource.image.get('baidu.png')),
+        'SearchEngine/engines/1': 'google||{}||https://www.google.com/search?q=%s'.format(
+            resource.image.get('google.png')),
+        'SearchEngine/engines/2': 'bing||{}||http://www.bing.com/search?q=%s'.format(resource.image.get('bing.png')),
+        'SearchEngine/engines/3': 'cnbing||{}||http://cn.bing.com/search?q=%s'.format(resource.image.get('bing.png')),
+        'SearchEngine/engines/4': '360||{}||https://www.so.com/s?ie=utf-8&q=%s'.format(resource.image.get('360.png')),
+        'SearchEngine/engines/5': 'sogou||{}||https://www.sogou.com/web?ie=utf8&query=%s'.format(
+            resource.image.get('sogou.png')),
+        'SearchEngine/engines/6': 'toutiao||{}||https://m.toutiao.com/search/?&keyword=%s'.format(
+            resource.image.get('toutiao.png')),
+        'SearchEngine/engines/7': 'yandex||{}||https://yandex.com/search/?text=%s'.format(
+            resource.image.get('yandex.png')),
         'SearchEngine/engines/8': 'douban||{}||https://search.douban.com/movie/subject_search?search_text=%s'.format(
-            join('Icons', 'douban.png')),
+            resource.image.get('douban.png')),
         'SearchEngine/default_engine_index': '0',
         'SuggestionState': '1',
         'SuggestionProvider/index': '0',
@@ -331,7 +331,7 @@ class SettingDialog(QDialog):
     def __export_settings(self):
         from Languages import Strings
         filename = QFileDialog.getSaveFileName(parent=self, caption=Strings.SETTING_CHOOSE_EXPORT,
-                                               directory='XSearch_Setting.json', filter='*.json')[0]
+                                               directory='{}_Setting.json'.format(Strings.APP_NAME), filter='*.json')[0]
         if filename:
             setting_map = {}
             for name in self.default_setting.keys():
@@ -485,6 +485,7 @@ class SettingDialog(QDialog):
         if text:
             self._ui.retranslateUi(self)
         if qss:
+            self.setWindowIcon(QIcon(resource.image.get('app.ico')))
             font_color = self._setting.value('Ui/font_color')
             theme_color = self._setting.value('Ui/theme_color')
             border_color = self._setting.value('Ui/border_color')
@@ -543,7 +544,7 @@ class SettingDialog(QDialog):
             }
             .QWidget QCheckBox::indicator:checked, .QWidget QRadioButton::indicator:checked {
             background-color: {theme_color};
-            image: url(Icons/check.png);
+            image: url({check.png});
             image-position: center;
             }'''
             right_qss = right_qss.replace('{theme_color}', theme_color).replace('{border_color}', border_color)
@@ -552,6 +553,7 @@ class SettingDialog(QDialog):
             right_qss = right_qss.replace('{button_color1}', theme_color.replace('#', '#26'))
             right_qss = right_qss.replace('{button_color2}', theme_color.replace('#', '#3F'))
             right_qss = right_qss.replace('{button_color3}', theme_color.replace('#', '#59'))
+            right_qss = right_qss.replace('{check.png}', resource.image.get_relative('check.png'))
             self._ui.widget_right.setStyleSheet(right_qss)
             self._ui.label_logo.setStyleSheet('.QLabel {font: 54px; color: white;}')
             self._ui.treeWidget.setStyleSheet('''.QTreeWidget {{
@@ -569,14 +571,15 @@ class SettingDialog(QDialog):
             border-bottom-left-radius: {}px;
             }}
             .QTreeWidget::item:selected {{
-            image: url(Icons/triangle.png);
+            image: url({});
             image-position: right;
             background-color: rgba(0, 0, 0, 0.2);
             }}
             .QTreeWidget::item:selected:!active {{color: white;}}
             .QTreeWidget::item:hover {{
             background-color: rgba(255, 255, 255, 0.2);
-            }}'''.format(border_color, theme_color, border_radius, border_radius))
+            }}'''.format(border_color, theme_color, border_radius, border_radius,
+                         resource.image.get_relative('triangle.png')))
             self._ui.pushButton_minimize.setStyleSheet('''.QPushButton {{
             font: 24px;
             outline: none;

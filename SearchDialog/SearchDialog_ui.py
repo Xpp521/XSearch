@@ -20,7 +20,6 @@
 # Created by: PyQt5 UI code generator 5.11.3
 #
 # WARNING! All changes made in this file will be lost!
-from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QRect
 from PyQt5.QtWidgets import QLabel, QWidget, QLineEdit, QListView
 
@@ -51,4 +50,3 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         from Languages import Strings
         Dialog.setWindowTitle(Strings.APP_NAME)
-        Dialog.setWindowIcon(QIcon(Strings.APP_ICON_PATH))

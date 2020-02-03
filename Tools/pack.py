@@ -20,13 +20,12 @@ Packing tool.
 
 Recommended packaging environment:
 System:
-    - 32-bit Windows 7;
+    - 32-bit Windows 7
 
 Python version:
-    - python 3.5.4;
+    - python 3.5.4
 
 Python package requirements:
-    - lxml>=4.4.2
     - PyQt5>=5.14.1
     - pynput==1.4.5
     - pycrypto==2.6.1
@@ -123,7 +122,7 @@ def pack():
             move(join(CUR_DIR, p), join(ROOT, p))
     directory = join(ROOT, 'dist', listdir(join(ROOT, 'dist'))[0])
     paths = [join(directory, 'Icons', 'ico')]
-    paths.extend(filter_path(directory, ['opengl32sw.dll', 'd3dcompiler_47.dll'],
+    paths.extend(filter_path(directory, ['libEGL.dll', 'libGLESv2.dll', 'opengl32sw.dll', 'd3dcompiler_47.dll'],
                              ['Qt5Core.dll', 'Qt5Widgets.dll', 'Qt5Gui.dll'], lambda pa: pa.startswith('Qt5')))
     directory = join(directory, 'PyQt5')
     paths.extend(filter_path(directory, exclude=['Qt', 'Qt.pyd', 'QtGui.pyd',
@@ -131,7 +130,11 @@ def pack():
     directory = join(directory, 'Qt')
     paths.extend(filter_path(directory, exclude=['plugins']))
     directory = join(directory, 'plugins')
-    paths.extend(filter_path(directory, exclude=['iconengines', 'imageformats', 'platforms', 'styles']))
+    paths.extend(filter_path(directory, exclude=['imageformats', 'platforms', 'styles']))
+    directory = join(directory, 'imageformats')
+    paths.extend(filter_path(directory, exclude=['qico.dll']))
+    directory = join(dirname(directory), 'platforms')
+    paths.extend(filter_path(directory, exclude=['qwindows.dll']))
     remove_paths(paths)
 
 

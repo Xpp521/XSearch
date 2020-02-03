@@ -17,11 +17,11 @@
 import webbrowser
 from sys import platform
 from enum import IntEnum
-from os.path import join
 from re import search, split
+from Resources import resource
 from urllib.parse import quote
 from Utils.GUI import ListModel
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QIcon, QPixmap
 from .SearchDialog_ui import Ui_Dialog
 from Utils.SuggestionGetter import KeywordGetter
 from PyQt5.QtWidgets import QDialog, QApplication
@@ -130,7 +130,7 @@ class SearchDialog(QDialog):
         if '.' in stripped_text and ' ' not in stripped_text and search(self.__regex_url, stripped_text):
             self.__model.clearRows()
             self.__model.setRow(0, stripped_text,
-                                QPixmap(join('Icons', 'web.png')).scaled(25, 25), OperationType.OPEN)
+                                QPixmap(resource.image.get('web.png')).scaled(25, 25), OperationType.OPEN)
             self.clear_selection()
             self.__ui.listView.setFixedHeight(50)
             self.__ui.widget.setFixedHeight(50)
@@ -150,12 +150,12 @@ class SearchDialog(QDialog):
             return
         if suggestions:
             if OperationType.OPEN == self.__model.customData(0):
-                self.__model.setRows(1, suggestions,
-                                     QPixmap(join('Icons', 'search_grey.png')).scaled(25, 25), OperationType.SEARCH)
+                self.__model.setRows(1, suggestions, QPixmap(resource.image.get('search_grey.png')).scaled(25, 25),
+                                     OperationType.SEARCH)
             else:
                 self.__model.clearRows()
-                self.__model.setRows(0, suggestions,
-                                     QPixmap(join('Icons', 'search_grey.png')).scaled(25, 25), OperationType.SEARCH)
+                self.__model.setRows(0, suggestions, QPixmap(resource.image.get('search_grey.png')).scaled(25, 25),
+                                     OperationType.SEARCH)
             self.clear_selection()
             self.__ui.listView.setFixedHeight(min(35 * self.__model.dataCount() + 15, self.__max_list_height))
             self.__ui.widget.setFixedHeight(min(35 * self.__model.dataCount() + 15, self.__max_list_height))
@@ -265,6 +265,7 @@ class SearchDialog(QDialog):
         if text:
             self.__ui.retranslateUi(self)
         if qss:
+            self.setWindowIcon(QIcon(resource.image.get('app.ico')))
             font_color = self.__setting.value('Ui/font_color')
             border_color = self.__setting.value('Ui/border_color')
             border_radius = self.__setting.value('Ui/border_radius')

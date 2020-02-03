@@ -3,7 +3,7 @@ from os import getcwd
 from os.path import join, dirname
 
 block_cipher = None
-block_cipher = pyi_crypto.PyiBlockCipher(key='1sad2*$_+-`!"aop')
+# block_cipher = pyi_crypto.PyiBlockCipher(key='1sad2*$_+-`!"aop')
 
 # Root directory
 ROOT = dirname(getcwd())
@@ -18,20 +18,22 @@ with open(join(ROOT, 'INFO.py')) as f:
 
 paths = [
     ROOT,
+    join(ROOT, 'Utils'),
+    join(ROOT, 'Languages'),
+    join(ROOT, 'Resources'),
     join(ROOT, 'SearchDialog'),
     join(ROOT, 'SettingDialog'),
-    join(ROOT, 'Strings'),
-    join(ROOT, 'Utils')
 ]
 
 added_files = [
-    (join(ROOT, 'Icons'), 'Icons'),
-    (join(ROOT, 'CHANGES.md'), '.'),
-    (join(ROOT, 'CreateStartup.vbs'), '.'),
-    (join(ROOT, 'LICENSE.md'), '.'),
     (join(ROOT, 'README.md'), '.',),
+    (join(ROOT, 'CHANGES.md'), '.'),
+    (join(ROOT, 'LICENSE.md'), '.'),
     (join(ROOT, 'README_cn.md'), '.',),
-    (join(ROOT, 'Languages', 'map.json'), 'Languages')
+    (join(ROOT, 'CreateStartup.vbs'), '.'),
+    (join(ROOT, 'Languages', 'map.json'), 'Languages'),
+    (join(ROOT, 'Resources', 'ttf'), join('Resources', 'ttf')),
+    (join(ROOT, 'Resources', 'image'), join('Resources', 'image')),
 ]
 
 a = Analysis([join(ROOT, 'Run.py')],
@@ -48,7 +50,7 @@ a = Analysis([join(ROOT, 'Run.py')],
              noarchive=False)
 
 pyz = PYZ(a.pure, a.zipped_data,
-             cipher=block_cipher)
+          cipher=block_cipher)
 
 exe = EXE(pyz,
           a.scripts,
@@ -59,8 +61,8 @@ exe = EXE(pyz,
           bootloader_ignore_signals=False,
           strip=False,
           upx=False,
-          console=False,
-          icon=join(ROOT, 'Icons', 'app.ico'))
+          console=True,
+          icon=join(ROOT, 'Resources', 'image', 'app.ico'))
 
 coll = COLLECT(exe,
                a.binaries,

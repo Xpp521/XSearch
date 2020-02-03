@@ -14,10 +14,9 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-from os.path import join
-from PyQt5.Qt import QCursor
-from PyQt5.QtGui import QIcon
+from Resources import resource
 from PyQt5.QtCore import QSettings
+from PyQt5.QtGui import QIcon, QCursor
 from Utils.Widgets import SingleLevelMenu
 from PyQt5.QtWidgets import QSystemTrayIcon
 
@@ -26,8 +25,8 @@ class TrayIcon(QSystemTrayIcon):
     def __init__(self):
         super().__init__()
         menu = SingleLevelMenu(['search', 'setting', None, 'exit'],
-                               [join('Icons', 'search.png'), join('Icons', 'setting.png'),
-                                None, join('Icons', 'exit.png')])
+                               [resource.image.get('search.png'), resource.image.get('setting.png'),
+                                None, resource.image.get('exit.png')])
         self.actions = menu.actions
         self.setActionHandler = menu.setActionHandler
         self.setContextMenu(menu)
@@ -39,11 +38,11 @@ class TrayIcon(QSystemTrayIcon):
         if text:
             from Languages import Strings
             self.setToolTip(Strings.APP_NAME)
-            self.setIcon(QIcon(Strings.APP_ICON_PATH))
             self.actions.get('search').setText(Strings.TRAY_SEARCH)
             self.actions.get('setting').setText(Strings.TRAY_SETTING)
             self.actions.get('exit').setText(Strings.TRAY_EXIT)
         if qss:
+            self.setIcon(QIcon(resource.image.get('app.ico')))
             setting = QSettings()
             font_color = setting.value('Ui/font_color')
             border_color = setting.value('Ui/border_color')

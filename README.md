@@ -5,7 +5,6 @@ This tool can let you complete the network search or reach the designated websit
 ጿ ኈ ቼ ዽ    ጿ ኈ ቼ ዽ    ጿ ኈ ቼ ዽ 
 
 ### Requirement
-- lxml
 - PyQt5
 - pynput
 - requests
@@ -23,10 +22,10 @@ Double click "Caps lock", then start your search journey.
 
 ### License
 [GPLv3.0](https://github.com/Xpp521/XSearch/blob/master/LICENSE.md "License")  
-This is a free software, welcome interested developers to share their code :)
+This is a free software, welcome interested developers to share their code : )
 
 ### ToDo List
-These are some features I am considering for future development in XSearch.
+These are some features I plan to add to this application:
 - Translation
 - Calculation
 - Custom theme

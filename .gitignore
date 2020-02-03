@@ -8,8 +8,6 @@
 out
 gen
 Leaf.ico
-/Icons/ico
-/Icons/0
-/Icons/zimuku.png
+Icons
 build/
 dist/

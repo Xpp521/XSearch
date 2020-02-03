@@ -1,15 +1,25 @@
+## v1.2.2
+#### Bug Fixes
+- Fix text display incompleteness;
+- Fix newVersionChecker always returns False;
+- Fix settingDialog's logo font display error on some devices.
+
+#### Refactor
+- Get rid of "lxml" module;
+- Reduce application package size;
+- Add "Resources" module, move all resources(image、ttf...) to it.
+
 ## v1.2.1
 #### Bug Fixes
 - Fix suggestion list appears delay just after switching suggestion providers.
 
 #### Refactor
-- Optimize new version check logic.
+- Optimize new version check logic;
 - Restructure SuggestionGetter module. 
 
 ## v1.2.0
 #### Features
-- Add a new suggestion provider: Google;
-- Add language management tool.
+- Add a new suggestion provider: Google.
 #### Refactor
 - Restructure and rename "Strings" module to "Languages";
 - SuggestionGetter and NewVersionChecker now share the same background thread;

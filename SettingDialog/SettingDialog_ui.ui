@@ -458,7 +458,7 @@
       <rect>
        <x>60</x>
        <y>280</y>
-       <width>100</width>
+       <width>150</width>
        <height>16</height>
       </rect>
      </property>
@@ -469,7 +469,7 @@
     <widget class="QLabel" name="label_suggestion_cache_count2">
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>210</x>
        <y>280</y>
        <width>100</width>
        <height>16</height>
@@ -1530,7 +1530,7 @@
       <rect>
        <x>60</x>
        <y>60</y>
-       <width>140</width>
+       <width>150</width>
        <height>16</height>
       </rect>
      </property>
@@ -1599,7 +1599,7 @@
        <x>60</x>
        <y>200</y>
        <width>100</width>
-       <height>16</height>
+       <height>20</height>
       </rect>
      </property>
      <property name="text">
@@ -1612,7 +1612,7 @@
        <x>160</x>
        <y>200</y>
        <width>500</width>
-       <height>16</height>
+       <height>20</height>
       </rect>
      </property>
      <property name="text">
@@ -1637,7 +1637,7 @@
       <rect>
        <x>60</x>
        <y>280</y>
-       <width>50</width>
+       <width>70</width>
        <height>16</height>
       </rect>
      </property>
@@ -1650,7 +1650,7 @@
       <rect>
        <x>60</x>
        <y>310</y>
-       <width>50</width>
+       <width>70</width>
        <height>16</height>
       </rect>
      </property>
@@ -1661,7 +1661,7 @@
     <widget class="QLabel" name="label_author_name">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>140</x>
        <y>280</y>
        <width>100</width>
        <height>16</height>
@@ -1674,7 +1674,7 @@
     <widget class="QLabel" name="label_email">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>140</x>
        <y>310</y>
        <width>500</width>
        <height>16</height>
@@ -1687,7 +1687,7 @@
     <widget class="QLabel" name="label_cur_version">
      <property name="geometry">
       <rect>
-       <x>200</x>
+       <x>210</x>
        <y>60</y>
        <width>100</width>
        <height>16</height>
@@ -1704,8 +1704,8 @@
    <zorder>frame_appearance</zorder>
    <zorder>frame_basics</zorder>
    <zorder>frame_hotkey</zorder>
-   <zorder>frame_search_other</zorder>
    <zorder>frame_engine_management</zorder>
+   <zorder>frame_search_other</zorder>
    <zorder>frame_about</zorder>
   </widget>
   <widget class="QWidget" name="widget_up" native="true">

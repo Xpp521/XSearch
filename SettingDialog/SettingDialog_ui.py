@@ -20,16 +20,18 @@
 # Created by: PyQt5 UI code generator 5.11.3
 #
 # WARNING! All changes made in this file will be lost!
+from Resources import resource
 from PyQt5.QtCore import Qt, QRect
 from Utils.SuggestionGetter import KeywordGetter
 from Utils.Widgets import IconDelegate, SingleLevelMenu
-from PyQt5.QtGui import QIcon, QFont, QCursor, QStandardItemModel
+from PyQt5.QtGui import QFont, QCursor, QFontDatabase, QStandardItemModel
 from PyQt5.QtWidgets import QFrame, QLabel, QWidget, QLineEdit, QCheckBox, QGroupBox, QComboBox, QTableView,\
     QRadioButton, QPushButton, QTreeWidget, QTreeWidgetItem, QAbstractScrollArea, QAbstractItemView
 
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
+        QFontDatabase().addApplicationFont(resource.ttf.get('mvboli.ttf'))
         Dialog.setObjectName("MainWindow")
         Dialog.resize(1025, 675)
         Dialog.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowMinimizeButtonHint)
@@ -155,10 +157,10 @@ class Ui_Dialog(object):
         self.pushButton_suggestion_clear_cache.setCursor(QCursor(Qt.PointingHandCursor))
         self.pushButton_suggestion_clear_cache.setObjectName("pushButton_suggestion_clear_cache")
         self.label_suggestion_cache_count1 = QLabel(self.frame_search_other)
-        self.label_suggestion_cache_count1.setGeometry(QRect(60, 280, 100, 16))
+        self.label_suggestion_cache_count1.setGeometry(QRect(60, 280, 150, 16))
         self.label_suggestion_cache_count1.setObjectName("label_suggestion_cache_count1")
         self.label_suggestion_cache_count2 = QLabel(self.frame_search_other)
-        self.label_suggestion_cache_count2.setGeometry(QRect(160, 280, 100, 16))
+        self.label_suggestion_cache_count2.setGeometry(QRect(210, 280, 100, 16))
         self.label_suggestion_cache_count2.setObjectName("label_suggestion_cache_count2")
         self.frame_hotkey = QFrame(self.widget_right)
         self.frame_hotkey.setGeometry(QRect(0, 50, 765, 600))
@@ -433,7 +435,7 @@ class Ui_Dialog(object):
         self.label_update.setGeometry(QRect(40, 20, 600, 25))
         self.label_update.setObjectName("label_update")
         self.label_cur_version_tip = QLabel(self.frame_about)
-        self.label_cur_version_tip.setGeometry(QRect(60, 60, 140, 16))
+        self.label_cur_version_tip.setGeometry(QRect(60, 60, 150, 16))
         self.label_cur_version_tip.setObjectName("label_cur_version_tip")
         self.label_open_source = QLabel(self.frame_about)
         self.label_open_source.setGeometry(QRect(40, 132, 600, 25))
@@ -449,28 +451,28 @@ class Ui_Dialog(object):
         self.label_open_source_tip.setGeometry(QRect(60, 170, 500, 16))
         self.label_open_source_tip.setObjectName("label_open_source_tip")
         self.label_open_source_address_tip = QLabel(self.frame_about)
-        self.label_open_source_address_tip.setGeometry(QRect(60, 200, 100, 16))
+        self.label_open_source_address_tip.setGeometry(QRect(60, 200, 100, 20))
         self.label_open_source_address_tip.setObjectName("label_open_source_address_tip")
         self.label_open_source_address = QLabel(self.frame_about)
-        self.label_open_source_address.setGeometry(QRect(160, 200, 500, 16))
+        self.label_open_source_address.setGeometry(QRect(160, 200, 500, 20))
         self.label_open_source_address.setObjectName("label_open_source_address")
         self.label_author_data = QLabel(self.frame_about)
         self.label_author_data.setGeometry(QRect(40, 244, 600, 25))
         self.label_author_data.setObjectName("label_author_data")
         self.label_author_name_tip = QLabel(self.frame_about)
-        self.label_author_name_tip.setGeometry(QRect(60, 280, 50, 16))
+        self.label_author_name_tip.setGeometry(QRect(60, 280, 70, 16))
         self.label_author_name_tip.setObjectName("label_author_name_tip")
         self.label_email_tip = QLabel(self.frame_about)
-        self.label_email_tip.setGeometry(QRect(60, 310, 50, 16))
+        self.label_email_tip.setGeometry(QRect(60, 310, 70, 16))
         self.label_email_tip.setObjectName("label_email_tip")
         self.label_author_name = QLabel(self.frame_about)
-        self.label_author_name.setGeometry(QRect(120, 280, 100, 16))
+        self.label_author_name.setGeometry(QRect(140, 280, 100, 16))
         self.label_author_name.setObjectName("label_author_name")
         self.label_email = QLabel(self.frame_about)
-        self.label_email.setGeometry(QRect(120, 310, 500, 16))
+        self.label_email.setGeometry(QRect(140, 310, 500, 16))
         self.label_email.setObjectName("label_email")
         self.label_cur_version = QLabel(self.frame_about)
-        self.label_cur_version.setGeometry(QRect(200, 60, 100, 16))
+        self.label_cur_version.setGeometry(QRect(210, 60, 100, 16))
         self.label_cur_version.setObjectName("label_cur_version")
         self.pushButton_close = QPushButton(self.widget_right)
         self.pushButton_close.setGeometry(QRect(730, 10, 20, 20))
@@ -508,7 +510,6 @@ class Ui_Dialog(object):
         self.frame_basics.raise_()
         '''
         from Languages import Strings
-        Dialog.setWindowIcon(QIcon(Strings.APP_ICON_PATH))
         Dialog.setWindowTitle(Strings.SETTING_DIALOG_TITLE)
         self.pushButton_minimize.setText('-')
         self.pushButton_close.setText('×')

@@ -5,7 +5,6 @@ XSearch可以让你更加快速、方便地完成网络搜索或者访问指定�
 ጿ ኈ ቼ ዽ    ጿ ኈ ቼ ዽ    ጿ ኈ ቼ ዽ 
 ___
 ### 依赖
-- lxml
 - PyQt5
 - pynput
 - requests
