@@ -1,3 +1,10 @@
+## v1.3.0.a1
+#### Features
+- Test translation function, switch keyword: "fy". Currently there is only one provider: YouDao (only available in mainland China).
+
+#### Refactor
+- Optimize newVersionChecker logic.
+
 ## v1.2.2
 #### Bug Fixes
 - Fix text display incompleteness;
@@ -7,7 +14,7 @@
 #### Refactor
 - Get rid of "lxml" module;
 - Reduce application package size;
-- Add "Resources" module, move all resources(image、ttf...) to it.
+- Add "Resources" module, move all resources (image、ttf...) to it.
 
 ## v1.2.1
 #### Bug Fixes

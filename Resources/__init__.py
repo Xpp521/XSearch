@@ -37,7 +37,7 @@ from os.path import join, isabs, dirname
 
 class ResourceGetter:
     """A resource getter for the given directory.
-    The resource in the directory cannot have duplicate filename, otherwise it will be ignored."""
+    Ps: Resources in the directory cannot have duplicate names, otherwise only the first one will be taken."""
     def __init__(self, base_dir):
         if isabs(base_dir):
             self.__directory = base_dir.replace('\\', '/')
@@ -49,8 +49,7 @@ class ResourceGetter:
 
     def __scan(self):
         """Scan all files in self.__directory and save them in self.__map.
-        Data format: (key, value) => (filename, filepath).
-        Ps: If there is a duplicate filename, it will be ignored!"""
+        Data format: (key, value) => (filename, filepath)."""
         for root, dirs, files in walk(self.__directory):
             for filename in files:
                 if self.__map.get(filename):

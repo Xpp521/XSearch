@@ -19,19 +19,29 @@ Packing tool.
 
 
 Recommended packaging environment:
-System:
-    - 32-bit Windows 7
 
-Python version:
-    - python 3.5.4
+1、Windows:
 
-Python package requirements:
-    - PyQt5>=5.14.1
-    - pynput==1.4.5
-    - pycrypto==2.6.1
-    - PyHotKey>=1.3.3
-    - requests>=2.22.0
-    - PyInstaller>=3.6
+    (1) System version:
+            - 32-bit Windows 7
+
+    (2) Python version:
+            - python 3.5
+
+    (3) Python package requirements:
+            - PyQt5>=5.14.1
+            - pynput==1.4.5
+            - pycrypto==2.6.1
+            - PyHotKey>=1.3.3
+            - requests>=2.22.0
+            - pyperclip>=1.7.0
+            - PyInstaller>=3.6
+
+2、Linux:
+    Unknown.
+
+3、Mac OS:
+    Unknown.
 """
 from sys import argv, path
 from shutil import rmtree, move

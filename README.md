@@ -1,13 +1,14 @@
 # XSearch
 [[简体中文版]](https://github.com/Xpp521/XSearch/blob/master/README_cn.md "中文版")
 ### Description
-This tool can let you complete the network search or reach the designated website faster, and there are other additional features.  
+This tool can let you complete the network search or reach the designated website faster, and more interesting features.  
 ጿ ኈ ቼ ዽ    ጿ ኈ ቼ ዽ    ጿ ኈ ቼ ዽ 
 
 ### Requirement
 - PyQt5
 - pynput
 - requests
+- pyperclip
 - PyHotKey
 
 ### Usage
@@ -26,7 +27,7 @@ This is a free software, welcome interested developers to share their code : )
 
 ### ToDo List
 These are some features I plan to add to this application:
-- Translation
 - Calculation
+- Get icon for custom search engine automatically
 - Custom theme
 - Selection search

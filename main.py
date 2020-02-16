@@ -83,7 +83,7 @@ class Application(SettingDialog):
 
     def _load_settings(self):
         super()._load_settings()
-        cache_count = self.__widgets.get('search').suggestion_getter.cache_count
+        cache_count = self.__widgets.get('search').keyword_getter.cache_count
         self._ui.label_suggestion_cache_count2.setText(str(cache_count))
         self._ui.pushButton_suggestion_clear_cache.setEnabled(cache_count)
 
@@ -94,7 +94,7 @@ class Application(SettingDialog):
             self.__show_tip(Strings.TIP_TURN_ON_TIP)
 
     def _clear_suggestion_cache(self):
-        self.__widgets.get('search').suggestion_getter.clear_cache()
+        self.__widgets.get('search').keyword_getter.clear_cache()
         self._ui.label_suggestion_cache_count2.setText('0')
         self._ui.pushButton_suggestion_clear_cache.setEnabled(False)
 

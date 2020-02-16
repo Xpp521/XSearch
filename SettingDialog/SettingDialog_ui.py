@@ -441,7 +441,7 @@ class Ui_Dialog(object):
         self.label_open_source.setGeometry(QRect(40, 132, 600, 25))
         self.label_open_source.setObjectName("label_open_source")
         self.label_update_tip = QLabel(self.frame_about)
-        self.label_update_tip.setGeometry(QRect(220, 90, 500, 16))
+        self.label_update_tip.setGeometry(QRect(220, 85, 500, 25))
         self.label_update_tip.setObjectName("label_update_tip")
         self.pushButton_check_update = QPushButton(self.frame_about)
         self.pushButton_check_update.setGeometry(QRect(60, 85, 150, 25))

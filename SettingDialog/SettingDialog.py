@@ -23,7 +23,6 @@ from sys import modules, platform
 from pynput.keyboard import Listener
 from Utils.NoSleepWorker import Worker
 from .SettingDialog_ui import Ui_Dialog
-from Utils.SuggestionGetter import KeywordGetter
 from PyQt5.QtWidgets import QDialog, QFileDialog
 from requests.exceptions import RequestException
 from PyQt5.QtCore import Qt, QObject, QThread, pyqtSignal, QSettings
@@ -41,27 +40,44 @@ class NewVersionChecker(QObject):
         self.moveToThread(self.__thread)
 
     @staticmethod
-    def __compare_version(old, new):
-        """Compare old version and new version, version style: GNU.
+    def find_first_num(s):
+        for i, c in enumerate(s):
+            if c.isnumeric():
+                return i
+
+    @classmethod
+    def __compare_version(cls, old, new):
+        """Compare old version and new version, version style: GNU, example: 1.0.0.a1.
         :param old: old version text.
         :param new: new version text.
         :return: returns True if new > old, otherwise returns False.
         """
-        try:
-            old_version = [int(v) for v in old.strip().replace('v', '').split('.')]
-            new_version = [int(v) for v in new.strip().replace('v', '').split('.')]
-        except ValueError:
-            return False
-        if 3 != len(old_version) or 3 != len(new_version):
+        old_version = [v for v in old.strip().split('.')]
+        old_version[0] = old_version[0].replace('v', '').replace('V', '')
+        new_version = [v for v in new.strip().split('.')]
+        new_version[0] = new_version[0].replace('v', '').replace('V', '')
+        if 3 > len(old_version) or 3 > len(new_version):
             return False
         if old_version[0] < new_version[0]:
             return True
-        else:
+        elif old_version[0] == new_version[0]:
             if old_version[1] < new_version[1]:
                 return True
-            else:
+            elif old_version[1] == new_version[1]:
                 if old_version[2] < new_version[2]:
                     return True
+                elif old_version[2] == new_version[2]:
+                    if 4 == len(old_version):
+                        if 3 == len(new_version):
+                            return True
+                        if 4 == len(new_version):
+                            old = old_version[3]
+                            new = new_version[3]
+                            if old[0] < new[0]:
+                                return True
+                            elif old[0] == new[0]:
+                                if old[cls.find_first_num(old):] < new[cls.find_first_num(new):]:
+                                    return True
         return False
 
     def check(self, *args, **kwargs):
@@ -96,49 +112,11 @@ class NewVersionChecker(QObject):
 
 class SettingDialog(QDialog):
     __check_new_version_signal = pyqtSignal()
-    default_setting = {
-        'TipState': '1',
-        'StartupState': '1',
-        'Language': 'en',
-        'SearchEngine/count': '9',
-        'SearchEngine/engines/0': 'baidu||{}||https://www.baidu.com/s?ie=utf-8&wd=%s'.format(
-            resource.image.get('baidu.png')),
-        'SearchEngine/engines/1': 'google||{}||https://www.google.com/search?q=%s'.format(
-            resource.image.get('google.png')),
-        'SearchEngine/engines/2': 'bing||{}||http://www.bing.com/search?q=%s'.format(resource.image.get('bing.png')),
-        'SearchEngine/engines/3': 'cnbing||{}||http://cn.bing.com/search?q=%s'.format(resource.image.get('bing.png')),
-        'SearchEngine/engines/4': '360||{}||https://www.so.com/s?ie=utf-8&q=%s'.format(resource.image.get('360.png')),
-        'SearchEngine/engines/5': 'sogou||{}||https://www.sogou.com/web?ie=utf8&query=%s'.format(
-            resource.image.get('sogou.png')),
-        'SearchEngine/engines/6': 'toutiao||{}||https://m.toutiao.com/search/?&keyword=%s'.format(
-            resource.image.get('toutiao.png')),
-        'SearchEngine/engines/7': 'yandex||{}||https://yandex.com/search/?text=%s'.format(
-            resource.image.get('yandex.png')),
-        'SearchEngine/engines/8': 'douban||{}||https://search.douban.com/movie/subject_search?search_text=%s'.format(
-            resource.image.get('douban.png')),
-        'SearchEngine/default_engine_index': '0',
-        'SuggestionState': '1',
-        'SuggestionProvider/index': '0',
-        'SuggestionProvider/data': str(KeywordGetter.QH360),
-        'BrowserPath': '',
-        'PrivateMode': '0',
-        'Hotkey/keys': 'caps_lock',
-        'Hotkey/interval': '0.3',
-        'Hotkey/repetitions': '2',
-        'Ui/distance': '3',
-        'Ui/opacity': '0.9',
-        'Ui/theme_index': '0',
-        'Ui/border_radius': '0',
-        'Ui/font_color': 'black',
-        'Ui/theme_color': '#3498db',
-        'Ui/border_color': '#a7acaf',
-        'Ui/selected_color': '#91c9f7',
-        'Ui/background_color': 'white',
-        'NoSleepState': '0',
-    }
 
     def __init__(self, work_thread=None):
         super().__init__()
+        from .default_setting_cn import default_setting
+        self.__default_setting = default_setting
         self.__is_moving = False
         self.__mouse_pos = None
         self.__dialog_pos = None
@@ -166,10 +144,16 @@ class SettingDialog(QDialog):
             self.__worker.suspend()
 
     def __check_settings(self):
-        if not self._setting.value('TipState'):
-            for name, setting in self.default_setting.items():
-                if not self._setting.value(name):
-                    self._setting.setValue(name, setting)
+        if not self._setting.value('SearchEngine/count'):
+            self._setting.setValue('SearchEngine/count', self.__default_setting.get('SearchEngine/count'))
+            self._setting.setValue('SearchEngine/default_engine_index',
+                                   self.__default_setting.get('SearchEngine/default_engine_index'))
+            for i in range(int(self.__default_setting.get('SearchEngine/count'))):
+                self._setting.setValue('SearchEngine/engines/{}'.format(i),
+                                       self.__default_setting.get('SearchEngine/engines/{}'.format(i)))
+        for name, setting in self.__default_setting.items():
+            if not name.startswith('SearchEngine') and not self._setting.value(name):
+                self._setting.setValue(name, setting)
 
     def _change_startup_state(self, checked):
         if 'win' == platform[:3]:
@@ -236,14 +220,14 @@ class SettingDialog(QDialog):
 
     def _change_suggestion_state(self, checked):
         self._ui.comboBox_suggestion_engine.setEnabled(checked)
-        self._setting.setValue('SuggestionState', str(int(checked)))
+        self._setting.setValue('KeywordGetter/state', str(int(checked)))
 
     def _change_suggestion_provider(self, index):
         current_data = str(self._ui.comboBox_suggestion_engine.currentData())
-        if self._setting.value('SuggestionProvider/data') == current_data:
+        if self._setting.value('KeywordGetter/provider/data') == current_data:
             return
-        self._setting.setValue('SuggestionProvider/index', str(index))
-        self._setting.setValue('SuggestionProvider/data', str(self._ui.comboBox_suggestion_engine.currentData()))
+        self._setting.setValue('KeywordGetter/provider/index', str(index))
+        self._setting.setValue('KeywordGetter/provider/data', str(self._ui.comboBox_suggestion_engine.currentData()))
         self._ui.pushButton_suggestion_clear_cache.click()
 
     def _clear_suggestion_cache(self):
@@ -323,6 +307,7 @@ class SettingDialog(QDialog):
                                                filter='*.json')[0]
         if filename:
             setting_map = load(open(filename))
+            self._setting.clear()
             for name, setting in setting_map.items():
                 self._setting.setValue(name, setting)
             self._load_settings()
@@ -334,7 +319,10 @@ class SettingDialog(QDialog):
                                                directory='{}_Setting.json'.format(Strings.APP_NAME), filter='*.json')[0]
         if filename:
             setting_map = {}
-            for name in self.default_setting.keys():
+            for name in self.__default_setting.keys():
+                setting_map[name] = self._setting.value(name)
+            for i in range(int(self._setting.value('SearchEngine/count'))):
+                name = 'SearchEngine/engines/{}'.format(i)
                 setting_map[name] = self._setting.value(name)
             dump(setting_map, open(filename, 'w'))
 
@@ -454,10 +442,10 @@ class SettingDialog(QDialog):
             self._ui.model.setData(self._ui.model.index(i, 1), icon)
             self._ui.model.setData(self._ui.model.index(i, 1), QIcon(icon), Qt.DecorationRole)
             self._ui.model.setData(self._ui.model.index(i, 2), url)
-        suggestion_state = int(self._setting.value('SuggestionState'))
-        self._ui.checkBox_search_suggestion.setChecked(suggestion_state)
-        self._ui.comboBox_suggestion_engine.setEnabled(suggestion_state)
-        self._ui.comboBox_suggestion_engine.setCurrentIndex(int(self._setting.value('SuggestionProvider/index')))
+        keyword_getter_state = int(self._setting.value('KeywordGetter/state'))
+        self._ui.checkBox_search_suggestion.setChecked(keyword_getter_state)
+        self._ui.comboBox_suggestion_engine.setEnabled(keyword_getter_state)
+        self._ui.comboBox_suggestion_engine.setCurrentIndex(int(self._setting.value('KeywordGetter/provider/index')))
         self._ui.lineEdit_browser_path.setText(self._setting.value('BrowserPath'))
         self._ui.checkBox_private_mode.setChecked(int(self._setting.value('PrivateMode')))
         keys = self._setting.value('Hotkey/keys')
@@ -688,6 +676,10 @@ class SettingDialog(QDialog):
         if Qt.Key_Escape == key:
             self._hide_dialog()
         event.ignore()
+
+    @property
+    def default_setting(self):
+        return self.__default_setting
 
     @property
     def work_thread(self):

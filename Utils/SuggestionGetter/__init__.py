@@ -47,4 +47,19 @@ Usage:
     # Switch suggestion provider
     a.getter.provider = KeywordGetter.GOOGLE
 """
-from .getters import KeywordGetter
+from .getters import KeywordGetter, TranslationGetter, CalculationGetter
+
+_classes = {'KeywordGetter': KeywordGetter,
+            'TranslationGetter': TranslationGetter,
+            'CalculationGetter': CalculationGetter}
+
+
+def get_class_by_name(name):
+    """
+    Get class by class name.
+    :param name: class name.
+    :return: class object or None.
+    """
+    if isinstance(name, str):
+        return _classes.get(name)
+    return None

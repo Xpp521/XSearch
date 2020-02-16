@@ -14,7 +14,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-VERSION = 'v1.2.2'
+VERSION = 'v1.3.0.a1'
 AUTHOR_NAME = 'Xpp'
 APP_NAME = 'XSearch'
 AUTHOR_EMAIL = 'Xpp233@foxmail.com'
